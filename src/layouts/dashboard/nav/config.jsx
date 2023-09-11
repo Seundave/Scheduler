@@ -1,4 +1,3 @@
-// import React from 'react';
 // component
 import SvgColor from '../../../components/svg-color';
 
@@ -17,20 +16,21 @@ const navConfig = [
     path: '/dashboard/user',
     icon: icon('ic_user'),
   },
-  // {
-  //   title: 'product',
-  //   path: '/dashboard/products',
-  //   icon: icon('ic_cart'),
-  // },
-  // {
-  //   title: 'blog',
-  //   path: '/dashboard/blog',
-  //   icon: icon('ic_blog'),
-  // },
   {
-    title: 'login',
-    path: '/login',
-    icon: icon('ic_lock'),
+    title: 'schedules',
+    path: '/dashboard/schedule',
+    icon: icon('ic_schedule'),
+  },
+  {
+    title: 'History',
+    path: '/dashboard/history',
+    icon: icon('ic_history'),
+  },
+  {
+    title: 'logout',
+    path: '/logout',
+    icon: icon('ic_logout'),
+    dropdown:false
   },
   // {
   //   title: 'Not found',

@@ -73,7 +73,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function UserPage() {
+export default function HistoryPage() {
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -149,17 +149,14 @@ export default function UserPage() {
   return (
     <>
       <Helmet>
-        <title> User page </title>
+        <title> History page </title>
       </Helmet>
 
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            User
+            History
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New User
-          </Button>
         </Stack>
 
         <Card>
