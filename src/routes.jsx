@@ -10,6 +10,7 @@ import Page404 from "./pages/Page404";
 import DashboardAppPage from "./pages/DashboardAppPage";
 import SchedulePage from "./pages/SchedulePage";
 import HistoryPage from "./pages/HistoryPage";
+import WelcomePage from "./pages/WelcomePage";
 
 // ----------------------------------------------------------------------
 
@@ -40,6 +41,11 @@ export default function Router() {
         { path: "schedule", element: <SchedulePage /> },
       ],
     },
+    // {
+    //   path: "/",
+    //   element: <WelcomePage />,
+    //   children: [{ element: <Navigate to="/" />, index: true }],
+    // },
     {
       path: "/",
       element: <LoginPage />,
