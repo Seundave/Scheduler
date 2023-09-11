@@ -333,11 +333,11 @@ export default function SchedulePage() {
         }}
       >
         <MenuItem>
-          <Iconify icon={"eva:checkmark-circle-2-fill"} sx={{ mr: 2 }} />
+          <Iconify icon={"eva:checkmark-circle-2-fill"} sx={{ mr: 2, color:"green" }} />
           Approve
         </MenuItem>
         <MenuItem>
-          <Iconify icon={"eva:close-circle-fill"} sx={{ mr: 2 }} />
+          <Iconify icon={"eva:close-circle-fill"} sx={{ mr: 2, color:"red" }} />
           Disapprove
         </MenuItem>
 
