@@ -47,13 +47,13 @@ const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-UserListToolbar.propTypes = {
+GalleryListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
 };
 
-export default function UserListToolbar({
+export default function GalleryListToolbar({
   numSelected,
   filterName,
   onFilterName,
@@ -87,7 +87,7 @@ export default function UserListToolbar({
         <StyledSearch
           value={filterName}
           onChange={onFilterName}
-          placeholder="Search user..."
+          placeholder="Search resource..."
           startAdornment={
             <InputAdornment position="start">
               <Iconify
@@ -107,53 +107,48 @@ export default function UserListToolbar({
         </Tooltip>
       ) : (
         <>
-        <Tooltip title="Filter list">
-          <IconButton
-            aria-controls={open ? "basic-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            onClick={handleShowFilter}
+          <Tooltip title="Filter list">
+            <IconButton
+              aria-controls={open ? "basic-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+              onClick={handleShowFilter}
+            >
+              <Iconify icon="ic:round-filter-list" />
+            </IconButton>
+          </Tooltip>
+
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            anchorOrigin={{ vertical: "top", horizontal: "left" }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+            onClose={handleCloseMenu}
+            sx={{position:"absolute"}}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
           >
-            <Iconify icon="ic:round-filter-list" />
-          </IconButton>
-        </Tooltip>
-
-      
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          anchorOrigin={{ vertical: "top", horizontal: "left" }}
-          transformOrigin={{ vertical: "top", horizontal: "right" }}
-          onClose={handleCloseMenu}
-          MenuListProps={{
-            "aria-labelledby": "basic-button",
-          }}
-        >
-          <FormGroup sx={{paddingLeft:'8px'}}>
-            <FormControlLabel
-              control={<Checkbox defaultChecked />}
-              label="Location"
-            />
-            <FormControlLabel
-              // required
-              control={<Checkbox />}
-              label="Faculty"
-            />
-            <FormControlLabel
-              disabled
-              control={<Checkbox />}
-              label="Facilities"
-            />
-          </FormGroup>
-        </Menu>
-
-
+            <FormGroup sx={{ paddingLeft: "8px" }}>
+              <FormControlLabel
+                control={<Checkbox defaultChecked />}
+                label="Location"
+              />
+              <FormControlLabel
+                // required
+                control={<Checkbox />}
+                label="Faculty"
+              />
+              <FormControlLabel
+                //   disabled
+                control={<Checkbox />}
+                label="Facilities"
+              />
+            </FormGroup>
+          </Menu>
         </>
-        
       )}
-
-     
     </StyledRoot>
   );
 }

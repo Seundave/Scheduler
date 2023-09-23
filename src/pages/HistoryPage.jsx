@@ -35,9 +35,9 @@ import USERLIST from '../_mock/user';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
+  { id: 'faculty', label: 'Faculty', alignRight: false },
+  { id: 'department', label: 'Department', alignRight: false },
+  { id: 'email', label: 'Email Address', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: '' },
 ];
@@ -176,7 +176,7 @@ export default function HistoryPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, status, company, avatarUrl, isVerified } = row;
+                    const { id, name, department, status, faculty, avatarUrl, email } = row;
                     const selectedUser = selected.indexOf(name) !== -1;
 
                     return (
@@ -194,11 +194,13 @@ export default function HistoryPage() {
                           </Stack>
                         </TableCell>
 
-                        <TableCell align="left">{company}</TableCell>
+                        <TableCell align="left">{faculty}</TableCell>
 
-                        <TableCell align="left">{role}</TableCell>
+                        <TableCell align="left">{department}</TableCell>
 
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
+                        <TableCell align="left">{email}</TableCell>
+
+                        {/* <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell> */}
 
                         <TableCell align="left">
                           <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>

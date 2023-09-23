@@ -11,6 +11,7 @@ import DashboardAppPage from "./pages/DashboardAppPage";
 import SchedulePage from "./pages/SchedulePage";
 import HistoryPage from "./pages/HistoryPage";
 import WelcomePage from "./pages/WelcomePage";
+import GalleryPage from "./pages/GalleryPage";
 
 // ----------------------------------------------------------------------
 
@@ -29,6 +30,10 @@ export default function Router() {
     navigate("/history");
   };
 
+  const handleGallery = () => {
+    navigate("/gallery");
+  };
+
   const routes = useRoutes([
     {
       path: "/dashboard",
@@ -36,9 +41,10 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: "app", element: <DashboardAppPage /> },
-        { path: "user", element: <UserPage /> },
+        { path: "admin", element: <UserPage /> },
         { path: "history", element: <HistoryPage /> },
         { path: "schedule", element: <SchedulePage /> },
+        { path: "gallery", element: <GalleryPage /> },
       ],
     },
     // {
@@ -58,6 +64,10 @@ export default function Router() {
     {
       path: "schedule",
       element: <SchedulePage onClick={handleSchedule} />,
+    },
+    {
+      path: "gallery",
+      element: <GalleryPage onClick={handleGallery} />,
     },
     {
       path: "history",

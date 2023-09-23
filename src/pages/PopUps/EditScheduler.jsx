@@ -1,24 +1,20 @@
 import React, { useState, useRef } from "react";
-import { Helmet } from "react-helmet-async";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import PopUpModal from "../../PopUpModal";
 import {
-  Box,
-  Button,
-  Paper,
-  Grid,
-  Select,
-  MenuItem,
-  TextField,
-  Typography,
-  IconButton,
   Stack,
+  Grid,
+  TextField,
+  Button,
+  Typography,
+  MenuItem,
+  Select,
+  Box,
+  IconButton,
 } from "@mui/material";
-import CardSlider from "../theme/CardSlider";
 import { CloudArrowUp } from "@phosphor-icons/react";
-import UniversityLogo from "../assets/university.png";
+import UniversityLogo from "../../assets/university.png";
 
-const DashboardAppPage = () => {
+const EditScheduler = ({ openEditScheduler, handleClose }) => {
   const [image, setImage] = useState();
   const inputRef = useRef(null);
 
@@ -39,32 +35,20 @@ const DashboardAppPage = () => {
   const handleImageChange = (event) => {
     setImage(event.target.files[0]);
   };
-
   return (
-    <div>
-      <Helmet>
-        <title> Home </title>
-      </Helmet>
-
-      <CardSlider />
-
-      {/* Start of staff details */}
-      <Paper
-        elevation={4}
-        sx={{
-          backgroundColor: "white",
-          padding: "40px",
-          marginTop: "30px",
-          borderRadius: "10px",
-        }}
+    <>
+      <PopUpModal
+        openPopUp={openEditScheduler}
+        handleClose={handleClose}
+        maxWidth="md"
       >
-        <Typography
+        {/* <Typography
           variant="h6"
           style={{ marginBottom: 25, fontWeight: "bold" }}
         >
           {" "}
-          Add Resource
-        </Typography>
+          Edit Scheduler
+        </Typography> */}
         <form>
           <Stack
             spacing={{ xs: 1, sm: 0 }}
@@ -169,16 +153,13 @@ const DashboardAppPage = () => {
               />
             </Grid>
           </Grid>
-          <Button
-            sx={{ bgcolor: "#e5e5e5", marginTop: "20px", marginBottom: "20px" }}
-            fullWidth
-          >
-            Create Scheduler
+          <Button sx={{ bgcolor: "#e5e5e5", marginTop: "20px",  marginBottom:"40px"}} fullWidth>
+            Edit Scheduler
           </Button>
         </form>
-      </Paper>
-    </div>
+      </PopUpModal>
+    </>
   );
 };
 
-export default DashboardAppPage;
+export default EditScheduler;
