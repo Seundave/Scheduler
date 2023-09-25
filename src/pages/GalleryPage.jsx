@@ -41,6 +41,7 @@ import USERLIST from "../_mock/user";
 import { dummyData } from "../theme/CardSlider";
 import EditScheduler from "./PopUps/EditScheduler";
 import DeleteScheduler from "./PopUps/DeleteScheduler";
+import { Navigate } from "react-router-dom";
 
 // ----------------------------------------------------------------------
 
@@ -145,6 +146,11 @@ export default function GalleryPage() {
   const handleMouseLeave = () => {
     setIsHovered(null);
   };
+
+  const handleOpenScheduler = ()=>{
+    console.log("Clicked")
+    // Navigate("/scheduler")
+  }
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -251,7 +257,8 @@ export default function GalleryPage() {
                     onMouseEnter={()=>handleMouseEnter(data.id) }
                     onMouseLeave={handleMouseLeave}
                     elevation={3}
-                    sx={{ position: "relative" }}
+                    onClick={handleOpenScheduler}
+                    sx={{ position: "relative", cursor:"pointer" }}
                   >
                     <CardMedia
                       component="img"
@@ -288,7 +295,7 @@ export default function GalleryPage() {
                         </Typography>
                       </div>
                     )}
-                    <Box>
+                    {/* <Box>
                       <IconButton
                         aria-label="more"
                         id="long-button"
@@ -331,7 +338,7 @@ export default function GalleryPage() {
                           Delete
                         </MenuItem>
                       </Menu>
-                    </Box>
+                    </Box> */}
                   </Card>
                   <CardContent>
                     <Typography variant="h6" gutterBottom>

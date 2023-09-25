@@ -11,11 +11,11 @@ const navConfig = [
     path: '/dashboard/app',
     icon: icon('ic_home'),
   },
-  {
-    title: 'Admin',
-    path: '/dashboard/admin',
-    icon: icon('ic_user'),
-  },
+  // {
+  //   title: 'Admin',
+  //   path: '/dashboard/admin',
+  //   icon: icon('ic_user'),
+  // },
   // {
   //   title: 'schedules',
   //   path: '/dashboard/schedule',

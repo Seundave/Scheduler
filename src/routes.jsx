@@ -12,6 +12,7 @@ import SchedulePage from "./pages/SchedulePage";
 import HistoryPage from "./pages/HistoryPage";
 import WelcomePage from "./pages/WelcomePage";
 import GalleryPage from "./pages/GalleryPage";
+import ScheduleDescriptionPage from "./pages/ScheduleDescriptionPage";
 
 // ----------------------------------------------------------------------
 
@@ -45,6 +46,7 @@ export default function Router() {
         { path: "history", element: <HistoryPage /> },
         { path: "schedule", element: <SchedulePage /> },
         { path: "gallery", element: <GalleryPage /> },
+        { path: "scheduler", element: <ScheduleDescriptionPage /> },
       ],
     },
     // {
@@ -64,6 +66,10 @@ export default function Router() {
     {
       path: "schedule",
       element: <SchedulePage onClick={handleSchedule} />,
+    },
+    {
+      path: "scheduler",
+      element: <ScheduleDescriptionPage onClick={handleSchedule} />,
     },
     {
       path: "gallery",
