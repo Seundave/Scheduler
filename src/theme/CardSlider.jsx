@@ -4,6 +4,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Box, Button } from "@mui/material";
 import { makeStyles } from "@material-ui/core/styles";
+import { useNavigate } from "react-router-dom";
 import { Card, CardMedia, Typography } from "@material-ui/core";
 import image1 from "../assets/pexels-david-yu-1624990-min.jpg";
 import image2 from "../assets/pexels-sevenstorm-juhaszimrus-555460-min.jpg";
@@ -51,13 +52,13 @@ const dummyData = [
     id: 1,
     imageUrl: image1,
     title: "Image 1",
-    description: "Description for Image 1",
+    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. type specimen book. It has survived not only five centuries, but also thpesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset",
   },
   {
     id: 2,
     imageUrl: image2,
     title: "Image 2",
-    description: "Description for Image 2",
+    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. type specimen book. It has survived not only five centuries, but also thpesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset",
   },
   {
     id: 3,
@@ -70,13 +71,13 @@ const dummyData = [
     id: 4,
     imageUrl: image1,
     title: "Image 4",
-    description: "Description for Image 4",
+    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. type specimen book. It has survived not only five centuries, but also thpesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset",
   },
   {
     id: 5,
     imageUrl: image2,
     title: "Image 5",
-    description: "Description for Image 5",
+    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. type specimen book. It has survived not only five centuries, but also thpesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset",
   },
   {
     id: 6,
@@ -90,6 +91,11 @@ const dummyData = [
 const CardSlider = () => {
   const classes = useStyles();
   const [hoveredId, setHoveredId] = useState(null);
+  const navigate = useNavigate();
+
+  const handleOpenScheduler = (id) => {
+    navigate("/dashboard/scheduler/" + id);
+  };
 
   const settings = {
     dots: true,
@@ -162,6 +168,7 @@ const CardSlider = () => {
                           width: "150px",
                           marginTop: "15px",
                         }}
+                        onClick={() => handleOpenScheduler(item.id)}
                       >
                         View more
                       </Button>

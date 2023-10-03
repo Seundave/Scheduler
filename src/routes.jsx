@@ -14,6 +14,7 @@ import WelcomePage from "./pages/WelcomePage";
 import GalleryPage from "./pages/GalleryPage";
 import ScheduleDescriptionPage from "./pages/ScheduleDescriptionPage";
 
+
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -46,7 +47,7 @@ export default function Router() {
         { path: "history", element: <HistoryPage /> },
         { path: "schedule", element: <SchedulePage /> },
         { path: "gallery", element: <GalleryPage /> },
-        { path: "scheduler", element: <ScheduleDescriptionPage /> },
+        { path: "scheduler/:id", element: <ScheduleDescriptionPage /> },
       ],
     },
     // {

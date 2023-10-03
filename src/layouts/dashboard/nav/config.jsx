@@ -31,6 +31,7 @@ const navConfig = [
     path: '/dashboard/history',
     icon: icon('ic_history'),
   },
+  
   {
     title: 'logout',
     path: '/logout',

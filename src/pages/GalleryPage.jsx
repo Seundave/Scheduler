@@ -41,7 +41,7 @@ import USERLIST from "../_mock/user";
 import { dummyData } from "../theme/CardSlider";
 import EditScheduler from "./PopUps/EditScheduler";
 import DeleteScheduler from "./PopUps/DeleteScheduler";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // ----------------------------------------------------------------------
 
@@ -91,6 +91,8 @@ function applySortFilter(array, comparator, query) {
 const ITEM_HEIGHT = 48;
 
 export default function GalleryPage() {
+  const navigate = useNavigate();
+
   const [anchorEl, setAnchorEl] = useState(null);
 
   const [openEditScheduler, setOpenEditScheduler] = useState(false);
@@ -116,8 +118,6 @@ export default function GalleryPage() {
   const handleMouseEnter = (id) => {
     setIsHovered(id);
   };
-
-  
 
   const onSubmit = async (data) => {
     try {
@@ -147,10 +147,9 @@ export default function GalleryPage() {
     setIsHovered(null);
   };
 
-  const handleOpenScheduler = ()=>{
-    console.log("Clicked")
-    // Navigate("/scheduler")
-  }
+  const handleOpenScheduler = (id) => {
+    navigate("/dashboard/scheduler/" + id);
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -178,8 +177,6 @@ export default function GalleryPage() {
     }
     setSelected([]);
   };
-
-  
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
@@ -254,11 +251,11 @@ export default function GalleryPage() {
               {dummyData.map((data) => (
                 <Grid key={data.id} item xs={12} sm={4}>
                   <Card
-                    onMouseEnter={()=>handleMouseEnter(data.id) }
+                    onMouseEnter={() => handleMouseEnter(data.id)}
                     onMouseLeave={handleMouseLeave}
                     elevation={3}
-                    onClick={handleOpenScheduler}
-                    sx={{ position: "relative", cursor:"pointer" }}
+                    onClick={() => handleOpenScheduler(data.id)}
+                    sx={{ position: "relative", cursor: "pointer" }}
                   >
                     <CardMedia
                       component="img"
