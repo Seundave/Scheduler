@@ -105,7 +105,7 @@ const DashboardAppPage = () => {
               )}
             </Box>
             <Stack
-              spacing={3}
+              // spacing={3}
               style={{
                 // width: "318.9px",
                 alignItems: "center",
@@ -136,6 +136,8 @@ const DashboardAppPage = () => {
                 sx={{ height: "40px" }}
               >
                 <MenuItem value="placeholder">Lecture theatre</MenuItem>
+                <MenuItem value="male">Male</MenuItem>
+                <MenuItem value="female">Female</MenuItem>
               </Select>
             </Grid>
 
