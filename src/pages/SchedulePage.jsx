@@ -30,17 +30,14 @@ import Scrollbar from "../components/scrollbar";
 import { UserListHead, UserListToolbar } from "../sections/@dashboard/user";
 // mock
 import USERLIST from "../_mock/user";
-import CreateAdmin from "./PopUps/CreateAdmin";
-import EditAdminDetails from "./PopUps/EditAdminDetails";
-import DeleteAdmin from "./PopUps/DeleteAdmin";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: "name", label: "Name", alignRight: false },
-  { id: "faculty", label: "Faculty", alignRight: false },
-  { id: "department", label: "Department", alignRight: false },
-  { id: "email", label: "Email address", alignRight: false },
+  { id: "company", label: "Company", alignRight: false },
+  { id: "role", label: "Role", alignRight: false },
+  { id: "isVerified", label: "Verified", alignRight: false },
   { id: "status", label: "Status", alignRight: false },
   { id: "" },
 ];
@@ -79,13 +76,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function UserPage() {
-  const [openAdminPopup, setOpenAdminPopup] = useState(false);
-
-  const [openEditAdminDetails, setOpenEditAdminDetails] = useState(false);
-
-  const [openDeleteAdmin, setOpenDeleteAdmin] = useState(false);
-
+export default function SchedulePage() {
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -106,20 +97,6 @@ export default function UserPage() {
 
   const handleCloseMenu = () => {
     setOpen(null);
-  };
-
-  const handleAdminPopup = () => {
-    console.log("clicked");
-    console.log(openAdminPopup);
-    setOpenAdminPopup((prev) => !prev);
-  };
-
-  const handleOpenEditAdminDetails = () => {
-    setOpenEditAdminDetails((prev) => !prev);
-  };
-
-  const handleDeleteAdmin = () => {
-    setOpenDeleteAdmin((prev) => !prev);
   };
 
   const handleRequestSort = (event, property) => {
@@ -169,22 +146,6 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
 
-  const onSubmit = async (data) => {
-    try {
-      console.log("Submitted successfully");
-      // submit data to backend
-      // console.log(data);
-      // dispatch(sendMessage(data));
-    } catch (error) {
-      console.log(error);
-      // reset();
-      // setError("afterSubmit", {
-      //   ...error,
-      //   message: error.message,
-      // });
-    }
-  };
-
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
 
@@ -199,7 +160,7 @@ export default function UserPage() {
   return (
     <>
       <Helmet>
-        <title> User page </title>
+        <title> Schedules page </title>
       </Helmet>
 
       <Container>
@@ -210,15 +171,8 @@ export default function UserPage() {
           mb={5}
         >
           <Typography variant="h4" gutterBottom>
-            Admin
+            Schedules
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-            onClick={handleAdminPopup}
-          >
-            New Admin
-          </Button>
         </Stack>
 
         <Card>
@@ -247,11 +201,11 @@ export default function UserPage() {
                       const {
                         id,
                         name,
-                        department,
+                        role,
                         status,
-                        faculty,
+                        company,
                         avatarUrl,
-                        email,
+                        isVerified,
                       } = row;
                       const selectedUser = selected.indexOf(name) !== -1;
 
@@ -283,15 +237,13 @@ export default function UserPage() {
                             </Stack>
                           </TableCell>
 
-                          <TableCell align="left">{faculty}</TableCell>
+                          <TableCell align="left">{company}</TableCell>
 
-                          <TableCell align="left">{department}</TableCell>
+                          <TableCell align="left">{role}</TableCell>
 
-                          <TableCell align="left">{email}</TableCell>
-
-                          {/* <TableCell align="left">
-                            {email ? "Yes" : "No"}
-                          </TableCell> */}
+                          <TableCell align="left">
+                            {isVerified ? "Yes" : "No"}
+                          </TableCell>
 
                           <TableCell align="left">
                             <Label
@@ -380,46 +332,20 @@ export default function UserPage() {
           },
         }}
       >
-        <MenuItem onClick={handleOpenEditAdminDetails}>
-          <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
-          Edit
+        <MenuItem>
+          <Iconify icon={"eva:checkmark-circle-2-fill"} sx={{ mr: 2, color:"green" }} />
+          Approve
+        </MenuItem>
+        <MenuItem>
+          <Iconify icon={"eva:close-circle-fill"} sx={{ mr: 2, color:"red" }} />
+          Disapprove
         </MenuItem>
 
-        <MenuItem sx={{ color: "error.main" }} onClick={handleDeleteAdmin}>
+        <MenuItem sx={{ color: "error.main" }}>
           <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }} />
           Delete
         </MenuItem>
       </Popover>
-
-      {openAdminPopup && (
-        <CreateAdmin
-          openAdminPopup={openAdminPopup}
-          handleClose={() => setOpenAdminPopup(false)}
-          onSubmit={onSubmit}
-          // handleDeleteClick={handleDeleteClick}
-          // id={activeNotification._id}
-        />
-      )}
-
-      {openEditAdminDetails && (
-        <EditAdminDetails
-          openEditAdminDetails={openEditAdminDetails}
-          handleClose={() => setOpenEditAdminDetails(false)}
-          onSubmit={onSubmit}
-          // handleDeleteClick={handleDeleteClick}
-          // id={activeNotification._id}
-        />
-      )}
-
-{setOpenDeleteAdmin && (
-        <DeleteAdmin
-          openDeleteAdmin={openDeleteAdmin}
-          handleClose={() => setOpenDeleteAdmin(false)}
-          onSubmit={onSubmit}
-          // handleDeleteClick={handleDeleteClick}
-          // id={activeNotification._id}
-        />
-      )}
     </>
   );
 }

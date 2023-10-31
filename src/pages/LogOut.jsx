@@ -40,13 +40,13 @@ const StyledContent = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function LoginPage() {
+export default function LogOut() {
   const mdUp = useResponsive('up', 'md');
 
   return (
     <>
       <Helmet>
-        <title> Login </title>
+        <title> Login | UI Portal</title>
       </Helmet>
 
       <StyledRoot>
@@ -75,7 +75,7 @@ export default function LoginPage() {
 
             <Typography variant="body2" sx={{ mb: 5 }}>
               Don’t have an account? {''}
-              <Link variant="subtitle2" to="/signup" sx={{cursor:"pointer"}}>Get started</Link>
+              <Link variant="subtitle2">Get started</Link>
             </Typography>
 
             {/* <Stack direction="row" spacing={2}>

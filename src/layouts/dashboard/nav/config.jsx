@@ -1,4 +1,3 @@
-// import React from 'react';
 // component
 import SvgColor from '../../../components/svg-color';
 
@@ -7,30 +6,36 @@ import SvgColor from '../../../components/svg-color';
 const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />;
 
 const navConfig = [
-  // {
-  //   title: 'dashboard',
-  //   path: '/dashboard/app',
-  //   icon: icon('ic_analytics'),
-  // },
   {
-    title: 'user',
-    path: '/dashboard/user',
+    title: 'home',
+    path: '/dashboard/app',
+    icon: icon('ic_home'),
+  },
+  {
+    title: 'Admin',
+    path: '/dashboard/admin',
     icon: icon('ic_user'),
   },
   // {
-  //   title: 'product',
-  //   path: '/dashboard/products',
-  //   icon: icon('ic_cart'),
-  // },
-  // {
-  //   title: 'blog',
-  //   path: '/dashboard/blog',
-  //   icon: icon('ic_blog'),
+  //   title: 'schedules',
+  //   path: '/dashboard/schedule',
+  //   icon: icon('ic_schedule'),
   // },
   {
-    title: 'login',
-    path: '/login',
-    icon: icon('ic_lock'),
+    title: 'gallery',
+    path: '/dashboard/gallery',
+    icon: icon('ic_gallery'),
+  },
+  {
+    title: 'History',
+    path: '/dashboard/history',
+    icon: icon('ic_history'),
+  },
+  {
+    title: 'logout',
+    path: '/logout',
+    icon: icon('ic_logout'),
+    dropdown:false
   },
   // {
   //   title: 'Not found',
