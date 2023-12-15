@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 // @mui
 import {
   Link,
@@ -25,6 +26,7 @@ const loginSchema = yup.object().shape({
   password: yup.string().required("Password is required"),
 });
 export default function LoginForm() {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -50,8 +52,16 @@ export default function LoginForm() {
   // };
 
   const onSubmit = async (data) => {
-    console.log(data);
-    console.log("clicked");
+    try {
+      setLoading(true);
+      const res = await axios.post("http://localhost:3000/auth/signin", data);
+      console.log("User logged in successfully", res.data);
+      setError(null);
+    } catch (error) {
+      console.log("Error signing in", error);
+      setLoading(false);
+      setError(error.message);
+    }
     navigate("/dashboard", { replace: true });
   };
 
@@ -95,19 +105,25 @@ export default function LoginForm() {
             justifyContent="space-between"
             sx={{ my: 2 }}
           >
-            <Checkbox name="remember" label="Remember me" />
-            <Link variant="subtitle2" underline="hover">
-              Forgot password?
-            </Link>
+            <Stack direction="row" alignItems="center">
+              <Checkbox name="remember" label="Remember me" />
+              <Typography>Remember me</Typography>
+            </Stack>
+            <Stack>
+              <Link to="/forget-password" variant="subtitle2" underline="hover">
+                Forgot password?
+              </Link>
+            </Stack>
           </Stack>
           <Button
             fullWidth
             size="large"
             type="submit"
             variant="contained"
+            disabled={loading}
             // onClick={handleClick}
           >
-            Login
+            {loading ? "Loading..." : "LOGIN"}
           </Button>
         </Stack>
       </form>

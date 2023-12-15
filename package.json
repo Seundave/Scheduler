@@ -23,6 +23,7 @@
     "@mui/styled-engine-sc": "^5.14.8",
     "@phosphor-icons/react": "^2.0.10",
     "apexcharts": "^3.42.0",
+    "axios": "^1.6.2",
     "change-case": "^4.1.2",
     "date-fns": "^2.30.0",
     "numeral": "^2.0.6",
