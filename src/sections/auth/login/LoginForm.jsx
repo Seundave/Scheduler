@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInFailure,
+  signInSuccess,
+} from "../../../redux/user/userSlice";
 // @mui
 import {
   Link,
@@ -11,8 +19,9 @@ import {
   Checkbox,
   Button,
   Typography,
+  CircularProgress,
+  Box,
 } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -26,7 +35,8 @@ const loginSchema = yup.object().shape({
   password: yup.string().required("Password is required"),
 });
 export default function LoginForm() {
-  const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -53,16 +63,20 @@ export default function LoginForm() {
 
   const onSubmit = async (data) => {
     try {
-      setLoading(true);
+      dispatch(signInStart());
       const res = await axios.post("http://localhost:3000/auth/signin", data);
       console.log("User logged in successfully", res.data);
-      setError(null);
+      console.log(res.data);
+      dispatch(signInSuccess(res.data));
+      toast.success("Login successfully!");
+      navigate("/dashboard", { replace: true });
+      // setError(null);
     } catch (error) {
       console.log("Error signing in", error);
-      setLoading(false);
-      setError(error.message);
+
+      dispatch(signInFailure(error.message));
+      toast.error("Wrong crendentials!");
     }
-    navigate("/dashboard", { replace: true });
   };
 
   return (
@@ -123,8 +137,22 @@ export default function LoginForm() {
             disabled={loading}
             // onClick={handleClick}
           >
-            {loading ? "Loading..." : "LOGIN"}
+            {loading ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  width: "50px",
+                  height: "50px",
+                }}
+              >
+                <CircularProgress />
+              </Box>
+            ) : (
+              "LOGIN"
+            )}
           </Button>
+          {error && <Typography sx={{ color: "red" }}>{error}</Typography>}
         </Stack>
       </form>
     </>

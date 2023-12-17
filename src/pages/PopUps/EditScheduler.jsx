@@ -42,13 +42,9 @@ const EditScheduler = ({ openEditScheduler, handleClose }) => {
         handleClose={handleClose}
         maxWidth="md"
       >
-        {/* <Typography
-          variant="h6"
-          style={{ marginBottom: 25, fontWeight: "bold" }}
-        >
-          {" "}
-          Edit Scheduler
-        </Typography> */}
+        <Typography variant="h4" sx={{ textAlign: "center" }}>
+          EDIT SCHEDULER
+        </Typography>
         <form>
           <Stack
             spacing={{ xs: 1, sm: 0 }}
@@ -153,7 +149,13 @@ const EditScheduler = ({ openEditScheduler, handleClose }) => {
               />
             </Grid>
           </Grid>
-          <Button sx={{ bgcolor: "#e5e5e5", marginTop: "20px",  marginBottom:"40px"}} fullWidth>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            sx={{ marginTop: "20px", marginBottom: "40px", height: "40px" }}
+            fullWidth
+          >
             Edit Scheduler
           </Button>
         </form>

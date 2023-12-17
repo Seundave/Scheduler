@@ -49,3 +49,41 @@ const users = [...Array(24)].map((_, index) => ({
 }));
 
 export default users;
+
+
+// import { useState, useEffect } from "react";
+// import axios from "axios";
+
+// const ShowAdmin = () => {
+//   const [users, setUsers] = useState([]);
+
+//   useEffect(() => {
+//     const fetchAdmins = async () => {
+//       try {
+//         const response = await axios.get(
+//           "http://localhost:3000/admin/all-admins"
+//         );
+//         console.log(response);
+//         const fetchedUsers = response.data;
+//         setUsers(fetchedUsers);
+//       } catch (error) {
+//         console.log("Error fetching admins", error);
+//       }
+//     };
+
+//     fetchAdmins();
+//   }, []);
+
+//   // Restructure user data
+//   const userData = users.map((user) => ({
+//     name: user.name,
+//     email: user.email,
+//     department: user.department,
+//     faculty: user.faculty,
+//     resource: user.resource,
+//   }));
+
+//   return userData;
+// };
+
+// export default ShowAdmin;

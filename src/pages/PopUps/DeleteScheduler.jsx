@@ -17,7 +17,7 @@ const DeleteScheduler = ({ openEditScheduler, handleClose }) => {
     width: { xs: "100px", md: "200px" },
     height: { xs: "40px", md: "50px" },
     textTransform: "inherit",
-    backgroundColor: "#FDB73D",
+    backgroundColor: "#113C9B",
     color: "white",
     borderRadius: "5px",
     fontSize: { xs: "10px", md: "14px" },

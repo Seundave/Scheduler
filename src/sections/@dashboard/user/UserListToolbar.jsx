@@ -19,6 +19,7 @@ import {
 // component
 import Iconify from "../../../components/iconify";
 import { useState } from "react";
+import FilterAdmin from "../../../pages/PopUps/FilterAdmin";
 
 // ----------------------------------------------------------------------
 
@@ -59,11 +60,33 @@ export default function UserListToolbar({
   onFilterName,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [openFilterPopup, setOpenFilterPopup] = useState(false);
   const open = Boolean(anchorEl);
 
   const handleShowFilter = (event) => {
     console.log("clicked");
     setAnchorEl(event.currentTarget);
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      console.log("Submitted successfully");
+      // submit data to backend
+      // console.log(data);
+      // dispatch(sendMessage(data));
+    } catch (error) {
+      console.log(error);
+      // reset();
+      // setError("afterSubmit", {
+      //   ...error,
+      //   message: error.message,
+      // });
+    }
+  };
+
+  const handleFilterPopup = () => {
+    console.log(openFilterPopup);
+    setOpenFilterPopup((prev) => !prev);
   };
 
   const handleCloseMenu = () => {
@@ -107,19 +130,28 @@ export default function UserListToolbar({
         </Tooltip>
       ) : (
         <>
-        <Tooltip title="Filter list">
-          <IconButton
-            aria-controls={open ? "basic-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            onClick={handleShowFilter}
-          >
-            <Iconify icon="ic:round-filter-list" />
-          </IconButton>
-        </Tooltip>
+          <Tooltip title="Filter list">
+            <IconButton
+              aria-controls={open ? "basic-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+              onClick={handleFilterPopup}
+              // onClick={handleShowFilter}
+            >
+              <Iconify icon="ic:round-filter-list" />
+            </IconButton>
+          </Tooltip>
 
-      
-        <Menu
+          {openFilterPopup && (
+            <FilterAdmin
+              openFilterPopup={openFilterPopup}
+              handleClose={() => setOpenFilterPopup(false)}
+              onSubmit={onSubmit}
+              // handleDeleteClick={handleDeleteClick}
+              // id={activeNotification._id}
+            />
+          )}
+          {/* <Menu
           id="basic-menu"
           anchorEl={anchorEl}
           open={open}
@@ -146,14 +178,9 @@ export default function UserListToolbar({
               label="Facilities"
             />
           </FormGroup>
-        </Menu>
-
-
+        </Menu> */}
         </>
-        
       )}
-
-     
     </StyledRoot>
   );
 }

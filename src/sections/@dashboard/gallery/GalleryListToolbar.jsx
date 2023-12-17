@@ -19,6 +19,7 @@ import {
 // component
 import Iconify from "../../../components/iconify";
 import { useState } from "react";
+import FilterScheduler from "../../../pages/PopUps/FilterScheduler";
 
 // ----------------------------------------------------------------------
 
@@ -59,11 +60,35 @@ export default function GalleryListToolbar({
   onFilterName,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const [openSchedulerFilter, setOpenSchedulerFilter] = useState(false);
+
   const open = Boolean(anchorEl);
 
   const handleShowFilter = (event) => {
     console.log("clicked");
     setAnchorEl(event.currentTarget);
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      console.log("Submitted successfully");
+      // submit data to backend
+      // console.log(data);
+      // dispatch(sendMessage(data));
+    } catch (error) {
+      console.log(error);
+      // reset();
+      // setError("afterSubmit", {
+      //   ...error,
+      //   message: error.message,
+      // });
+    }
+  };
+
+  const handleSchedulerFilterPopup = () => {
+    console.log("Clicked");
+    setOpenSchedulerFilter((prev) => !prev);
   };
 
   const handleCloseMenu = () => {
@@ -112,13 +137,22 @@ export default function GalleryListToolbar({
               aria-controls={open ? "basic-menu" : undefined}
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
-              onClick={handleShowFilter}
+              onClick={handleSchedulerFilterPopup}
             >
               <Iconify icon="ic:round-filter-list" />
             </IconButton>
           </Tooltip>
 
-          <Menu
+          {openSchedulerFilter && (
+            <FilterScheduler
+              openSchedulerFilter={openSchedulerFilter}
+              handleClose={() => setOpenSchedulerFilter(false)}
+              onSubmit={onSubmit}
+              // handleDeleteClick={handleDeleteClick}
+              // id={activeNotification._id}
+            />
+          )}
+          {/* <Menu
             id="basic-menu"
             anchorEl={anchorEl}
             open={open}
@@ -146,7 +180,7 @@ export default function GalleryListToolbar({
                 label="Facilities"
               />
             </FormGroup>
-          </Menu>
+          </Menu> */}
         </>
       )}
     </StyledRoot>

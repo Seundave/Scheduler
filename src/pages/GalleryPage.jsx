@@ -1,7 +1,8 @@
 import { Helmet } from "react-helmet-async";
 import { filter } from "lodash";
 import { sentenceCase } from "change-case";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { Edit, Delete } from "@mui/icons-material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 // @mui
@@ -90,6 +91,8 @@ function applySortFilter(array, comparator, query) {
 const ITEM_HEIGHT = 48;
 
 export default function GalleryPage() {
+  const [schedulerData, setSchedulerData] = useState([]);
+
   const [anchorEl, setAnchorEl] = useState(null);
 
   const [openEditScheduler, setOpenEditScheduler] = useState(false);
@@ -116,8 +119,6 @@ export default function GalleryPage() {
     setIsHovered(id);
   };
 
-  
-
   const onSubmit = async (data) => {
     try {
       console.log("Submitted successfully");
@@ -133,6 +134,23 @@ export default function GalleryPage() {
       // });
     }
   };
+
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/scheduler/get-schedulers"
+        );
+        console.log(response);
+        const fetchedSchedulers = response.data;
+        setSchedulerData(fetchedSchedulers);
+      } catch (error) {
+        console.log("Error fetching admins", error);
+      }
+    };
+
+    fetchAdmins();
+  }, []);
 
   const handleEditNotification = () => {
     setOpenEditScheduler((prev) => !prev);
@@ -172,8 +190,6 @@ export default function GalleryPage() {
     }
     setSelected([]);
   };
-
-  
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
@@ -216,6 +232,8 @@ export default function GalleryPage() {
     filterName
   );
 
+  console.log(schedulerData);
+
   const isNotFound = !filteredUsers.length && !!filterName;
 
   return (
@@ -248,7 +266,7 @@ export default function GalleryPage() {
               {dummyData.map((data) => (
                 <Grid key={data.id} item xs={12} sm={4}>
                   <Card
-                    onMouseEnter={()=>handleMouseEnter(data.id) }
+                    onMouseEnter={() => handleMouseEnter(data.id)}
                     onMouseLeave={handleMouseLeave}
                     elevation={3}
                     sx={{ position: "relative" }}
@@ -310,7 +328,10 @@ export default function GalleryPage() {
                         open={open}
                         onClose={handleOptionClose}
                         anchorOrigin={{ vertical: "top", horizontal: "left" }}
-                        transformOrigin={{ vertical: "top", horizontal: "right" }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "right",
+                        }}
                         MenuListProps={{
                           "aria-labelledby": "basic-button",
                         }}

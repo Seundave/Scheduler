@@ -41,7 +41,7 @@ const TABLE_HEAD = [
   { id: "faculty", label: "Faculty", alignRight: false },
   { id: "department", label: "Department", alignRight: false },
   { id: "email", label: "Email address", alignRight: false },
-  { id: "status", label: "Status", alignRight: false },
+  { id: "resource", label: "Resource", alignRight: false },
   { id: "" },
 ];
 

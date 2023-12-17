@@ -1,29 +1,40 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Stack,
   Grid,
   TextField,
   Button,
-  Typography,
-  MenuItem,
   Select,
+  MenuItem,
+  Typography,
+  CircularProgress,
+  Box,
 } from "@mui/material";
+import axios from "axios";
 import PopUpModal from "../../PopUpModal";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createAdminFailure,
+  createAdminSuccess,
+  createAdminStart,
+} from "../../redux/create-admin/createAdmin";
 
-const EditAdminDetails = ({ openEditAdminDetails, handleClose }) => {
-  const adminFormSchema = yup.object().shape({
-    name: yup.string().required("Name is required"),
-    faculty: yup.string().required("Faculty is required"),
-    department: yup.string().required("Department is required"),
-    resource: yup.string().required("Resource is required"),
-    email: yup.string().email().required("Email address is required"),
-  });
-
+const adminFormSchema = yup.object().shape({
+  name: yup.string().required("Name is required"),
+  faculty: yup.string().required("Faculty is required"),
+  department: yup.string().required("Department is required"),
+  resource: yup.string().required("Resource is required"),
+  password: yup.string().required("Password is required"),
+  email: yup.string().email().required("Email address is required"),
+});
+const FilterScheduler = ({ openSchedulerFilter, handleClose }) => {
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.admin);
   const methods = useForm({
     defaultValues: {
       name: "",
@@ -47,46 +58,53 @@ const EditAdminDetails = ({ openEditAdminDetails, handleClose }) => {
 
   const onSubmit = async (data) => {
     try {
-      // dispatch(createAdminStart());
-      const res = await axios.patch(
-        "http://localhost:3000/admin/update-admin/65799396ceefbe4277794e49",
+      dispatch(createAdminStart());
+      const res = await axios.post(
+        "http://localhost:3000/admin/create-admin",
         data
       );
-      console.log("Admin details updated successfully", res.data);
+      console.log("Admin created successfully", res.data);
       console.log(res);
-      // dispatch(createAdminSuccess(res.data));
-      // toast.success("Admin created successfully!");
+      dispatch(createAdminSuccess(res.data));
+      toast.success("Admin created successfully!");
       // console.log(res.data);
       reset();
       // window.location.reload();
     } catch (error) {
       console.log("Error submitting form", error);
-      // toast.error("Error creating admin!");
-      // dispatch(createAdminFailure(error.message));
+      toast.error("Error creating admin!");
+      dispatch(createAdminFailure(error.message));
     }
   };
   return (
     <PopUpModal
-      openPopUp={openEditAdminDetails}
+      openPopUp={openSchedulerFilter}
       handleClose={handleClose}
       maxWidth="md"
     >
       <Typography variant="h4" sx={{ textAlign: "center" }}>
-        EDIT ADMIN DETAILS
+        FILTER
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack sx={{ marginTop: "20px" }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                name="title"
-                placeholder="Name"
+            <Grid
+              item
+              xs={12}
+              sm={3}
+              //   sx={{ justifyContent: "center", alignItems: "center", width:"100px" }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                sx={{ height: "55px" }}
                 fullWidth
-                {...register("name")}
-              />
+              >
+                LOCATION
+              </Button>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              {/* <TextField name="title" placeholder="Faculty" fullWidth /> */}
+            <Grid item xs={12} sm={9}>
               <Select
                 defaultValue="placeholder"
                 fullWidth
@@ -94,7 +112,7 @@ const EditAdminDetails = ({ openEditAdminDetails, handleClose }) => {
                 name="faculty"
                 {...register("faculty")}
               >
-                <MenuItem value="placeholder">FACULTY</MenuItem>
+                <MenuItem value="placeholder">LOCATION</MenuItem>
                 <MenuItem value="FACULTY OF AGRICULTURE AND FORESTRY">
                   FACULTY OF AGRICULTURE AND FORESTRY
                 </MenuItem>
@@ -125,8 +143,23 @@ const EditAdminDetails = ({ openEditAdminDetails, handleClose }) => {
                 </MenuItem>
               </Select>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              {/* <TextField name="title" placeholder="Department" fullWidth /> */}
+            <Grid
+              item
+              xs={12}
+              sm={3}
+              //   sx={{ justifyContent: "center", alignItems: "center", width:"100px" }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                sx={{ height: "55px" }}
+                fullWidth
+              >
+                FACULTY
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={9}>
               <Select
                 defaultValue="placeholder"
                 fullWidth
@@ -134,7 +167,7 @@ const EditAdminDetails = ({ openEditAdminDetails, handleClose }) => {
                 name="department"
                 {...register("department")}
               >
-                <MenuItem value="placeholder">DEPARTMENT</MenuItem>
+                <MenuItem value="placeholder">FACULTY</MenuItem>
                 <MenuItem value="DEPARTMENT OF ANIMAL SCIENCE">
                   DEPARTMENT OF ANIMAL SCIENCE
                 </MenuItem>
@@ -176,32 +209,33 @@ const EditAdminDetails = ({ openEditAdminDetails, handleClose }) => {
                 </MenuItem>
               </Select>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                name="email"
-                placeholder="Email address"
-                fullWidth
-                {...register("email")}
-              />
-            </Grid>
           </Grid>
         </Stack>
         <Button
           variant="contained"
           color="primary"
           type="submit"
-          sx={{
-            marginTop: "20px",
-            marginBottom: "40px",
-            height: "40px",
-          }}
+          sx={{ marginTop: "20px", marginBottom: "40px", height: "40px" }}
           fullWidth
         >
-          Save
+          {loading ? (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: "50px",
+                height: "50px",
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          ) : (
+            "Apply filter"
+          )}
         </Button>
       </form>
     </PopUpModal>
   );
 };
 
-export default EditAdminDetails;
+export default FilterScheduler;
