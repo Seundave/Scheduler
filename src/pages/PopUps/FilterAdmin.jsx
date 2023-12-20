@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Stack,
   Grid,
@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import PopUpModal from "../../PopUpModal";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -19,32 +20,28 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  createAdminFailure,
-  createAdminSuccess,
-  createAdminStart,
-} from "../../redux/create-admin/createAdmin";
+  getFilteredAdminFailure,
+  getFilteredAdminStart,
+  getFilteredAdminSuccess,
+} from "../../redux/get-admins/getAdmins";
 
-const adminFormSchema = yup.object().shape({
-  name: yup.string().required("Name is required"),
-  faculty: yup.string().required("Faculty is required"),
-  department: yup.string().required("Department is required"),
-  resource: yup.string().required("Resource is required"),
-  password: yup.string().required("Password is required"),
-  email: yup.string().email().required("Email address is required"),
+const filterFormSchema = yup.object().shape({
+  faculty: yup.string(),
+  department: yup.string(),
 });
 const FilterAdmin = ({ openFilterPopup, handleClose }) => {
+  const [isloading, setIsLoading] = useState(false);
+  const [filteredListings, setFilteredListings] = useState([]);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.admin);
+  const { allAdmins } = useSelector((state) => state.getAdmin);
   const methods = useForm({
     defaultValues: {
-      name: "",
       faculty: "",
       department: "",
-      resource: "",
-      password: "",
-      email: "",
     },
-    resolver: yupResolver(adminFormSchema),
+    resolver: yupResolver(filterFormSchema),
   });
 
   const {
@@ -56,26 +53,67 @@ const FilterAdmin = ({ openFilterPopup, handleClose }) => {
     formState: { errors },
   } = methods;
 
+  // useEffect(() => {
+  //   const fetchAdmins = async () => {
+  //     try {
+  //       dispatch(getFilteredAdminStart());
+  //       const response = await axios.get(
+  //         "http://localhost:3000/admin/get-admins/",
+  //         data
+  //       );
+  //       console.log(response);
+  //       dispatch(getFilteredAdminSuccess(response.data))
+  //     } catch (error) {
+  //       dispatch(getFilteredAdminFailure(error));
+  //       console.log("Error fetching admins", error);
+  //     }
+  //   };
+
+  //   fetchAdmins();
+  // },[]);
+
+  // useEffect(() => {
+  //   const urlParams = new URLSearchParams(location.search);
+  //   const departmentUrl = urlParams.get("department");
+  //   const facultyUrl = urlParams.get("faculty");
+
+  //   if (departmentUrl || facultyUrl) {
+  //     data({
+  //       department: departmentUrl || "",
+  //       faculty: facultyUrl || "",
+  //     });
+  //   }
+
+  //   const fetchFilteredAdmins = async () => {
+  //     setIsLoading(true);
+  //     const searchQuery = urlParams.toString();
+  //     const res = await axios.get(`admin/listing/get?${searchQuery}`); //To be changed
+  //     setFilteredListings(res.data);
+  //     setIsLoading(false);
+  //   };
+
+  //   fetchFilteredAdmins();
+  // }, [location.search]);
+
+  // console.log(filteredListings);
+
   const onSubmit = async (data) => {
+    console.log(data)
     try {
-      dispatch(createAdminStart());
-      const res = await axios.post(
-        "http://localhost:3000/admin/create-admin",
+      dispatch(getFilteredAdminStart());
+      const response = await axios.post(
+        "http://localhost:3000/admin/get-admins/",
         data
       );
-      console.log("Admin created successfully", res.data);
-      console.log(res);
-      dispatch(createAdminSuccess(res.data));
-      toast.success("Admin created successfully!");
-      // console.log(res.data);
-      reset();
-      // window.location.reload();
+      console.log(response.data);
+      dispatch(getFilteredAdminSuccess(response.data));
+      handleClose();
     } catch (error) {
-      console.log("Error submitting form", error);
-      toast.error("Error creating admin!");
-      dispatch(createAdminFailure(error.message));
+      dispatch(getFilteredAdminFailure(error));
+      console.log("Error fetching admins", error);
     }
   };
+
   return (
     <PopUpModal
       openPopUp={openFilterPopup}
@@ -112,7 +150,9 @@ const FilterAdmin = ({ openFilterPopup, handleClose }) => {
                 name="faculty"
                 {...register("faculty")}
               >
-                <MenuItem value="placeholder">FACULTY</MenuItem>
+                <MenuItem disabled value="placeholder">
+                  FACULTY
+                </MenuItem>
                 <MenuItem value="FACULTY OF AGRICULTURE AND FORESTRY">
                   FACULTY OF AGRICULTURE AND FORESTRY
                 </MenuItem>
@@ -167,7 +207,9 @@ const FilterAdmin = ({ openFilterPopup, handleClose }) => {
                 name="department"
                 {...register("department")}
               >
-                <MenuItem value="placeholder">DEPARTMENT</MenuItem>
+                <MenuItem disabled value="placeholder">
+                  DEPARTMENT
+                </MenuItem>
                 <MenuItem value="DEPARTMENT OF ANIMAL SCIENCE">
                   DEPARTMENT OF ANIMAL SCIENCE
                 </MenuItem>
@@ -215,7 +257,7 @@ const FilterAdmin = ({ openFilterPopup, handleClose }) => {
           variant="contained"
           color="primary"
           type="submit"
-          sx={{ marginTop: "20px", marginBottom: "40px", height: "40px" }}
+          sx={{ marginTop: "20px", marginBottom: "40px", height: "45px" }}
           fullWidth
         >
           {loading ? (

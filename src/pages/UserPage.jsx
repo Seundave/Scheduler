@@ -1,7 +1,8 @@
 import { Helmet } from "react-helmet-async";
 import { filter } from "lodash";
 import { sentenceCase } from "change-case";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 // @mui
 import {
   Card,
@@ -21,6 +22,7 @@ import {
   IconButton,
   TableContainer,
   TablePagination,
+  CircularProgress,
 } from "@mui/material";
 // components
 import Label from "../components/label";
@@ -33,6 +35,12 @@ import USERLIST from "../_mock/user";
 import CreateAdmin from "./PopUps/CreateAdmin";
 import EditAdminDetails from "./PopUps/EditAdminDetails";
 import DeleteAdmin from "./PopUps/DeleteAdmin";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getAdminFailure,
+  getAdminStart,
+  getAdminSuccess,
+} from "../redux/get-admins/getAdmins";
 
 // ----------------------------------------------------------------------
 
@@ -80,6 +88,12 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function UserPage() {
+  // const [users, setUsers] = useState([]);
+
+  const dispatch = useDispatch();
+
+  const [selectedUser, setSelectedUser] = useState(null);
+
   const [openAdminPopup, setOpenAdminPopup] = useState(false);
 
   const [openEditAdminDetails, setOpenEditAdminDetails] = useState(false);
@@ -98,11 +112,42 @@ export default function UserPage() {
 
   const [filterName, setFilterName] = useState("");
 
+  const [loading, setLoading] = useState(true);
+
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const handleOpenMenu = (event) => {
+  const handleOpenMenu = (event, user) => {
+    setSelectedUser(user);
     setOpen(event.currentTarget);
   };
+
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      try {
+        dispatch(getAdminStart());
+        const response = await axios.get(
+          "http://localhost:3000/admin/all-admins"
+        );
+        console.log(response);
+        // const fetchedUsers = response.data;
+        dispatch(getAdminSuccess(response.data));
+        // setUsers(fetchedUsers);
+        setLoading(false);
+      } catch (error) {
+        dispatch(getAdminFailure(error.message));
+        console.log("Error fetching admins", error);
+        setLoading(false);
+      }
+    };
+
+    fetchAdmins();
+  }, []);
+
+  const {allAdmins} = useSelector((state)=>state.getAdmin)
+
+  console.log(allAdmins)
+
+  // console.log(users);
 
   const handleCloseMenu = () => {
     setOpen(null);
@@ -130,7 +175,7 @@ export default function UserPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = allAdmins.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -186,10 +231,10 @@ export default function UserPage() {
   };
 
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - allAdmins.length) : 0;
 
   const filteredUsers = applySortFilter(
-    USERLIST,
+    allAdmins,
     getComparator(order, orderBy),
     filterName
   );
@@ -230,12 +275,12 @@ export default function UserPage() {
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
+            {loading ? <Stack alignItems={"center"}> <CircularProgress  /> </Stack> :  <Table>
                 <UserListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
+                  rowCount={allAdmins.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
@@ -245,10 +290,10 @@ export default function UserPage() {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
                       const {
-                        id,
+                        _id,
                         name,
                         department,
-                        status,
+                        resource,
                         faculty,
                         avatarUrl,
                         email,
@@ -258,7 +303,7 @@ export default function UserPage() {
                       return (
                         <TableRow
                           hover
-                          key={id}
+                          key={_id}
                           tabIndex={-1}
                           role="checkbox"
                           selected={selectedUser}
@@ -276,7 +321,7 @@ export default function UserPage() {
                               alignItems="center"
                               spacing={2}
                             >
-                              <Avatar alt={name} src={avatarUrl} />
+                              {/* <Avatar alt={name} src={avatarUrl} /> */}
                               <Typography variant="subtitle2" noWrap>
                                 {name}
                               </Typography>
@@ -293,21 +338,13 @@ export default function UserPage() {
                             {email ? "Yes" : "No"}
                           </TableCell> */}
 
-                          <TableCell align="left">
-                            <Label
-                              color={
-                                (status === "banned" && "error") || "success"
-                              }
-                            >
-                              {sentenceCase(status)}
-                            </Label>
-                          </TableCell>
+                          <TableCell align="left">{resource}</TableCell>
 
                           <TableCell align="right">
                             <IconButton
                               size="large"
                               color="inherit"
-                              onClick={handleOpenMenu}
+                              onClick={(event) => handleOpenMenu(event, row)}
                             >
                               <Iconify icon={"eva:more-vertical-fill"} />
                             </IconButton>
@@ -346,14 +383,14 @@ export default function UserPage() {
                     </TableRow>
                   </TableBody>
                 )}
-              </Table>
+              </Table>}
             </TableContainer>
           </Scrollbar>
 
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={USERLIST.length}
+            count={allAdmins.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -404,6 +441,7 @@ export default function UserPage() {
       {openEditAdminDetails && (
         <EditAdminDetails
           openEditAdminDetails={openEditAdminDetails}
+          selectedUser={selectedUser}
           handleClose={() => setOpenEditAdminDetails(false)}
           onSubmit={onSubmit}
           // handleDeleteClick={handleDeleteClick}
@@ -411,9 +449,10 @@ export default function UserPage() {
         />
       )}
 
-{setOpenDeleteAdmin && (
+      {setOpenDeleteAdmin && (
         <DeleteAdmin
           openDeleteAdmin={openDeleteAdmin}
+          selectedUser={selectedUser}
           handleClose={() => setOpenDeleteAdmin(false)}
           onSubmit={onSubmit}
           // handleDeleteClick={handleDeleteClick}

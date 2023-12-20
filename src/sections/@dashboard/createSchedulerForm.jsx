@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import {
   Box,
@@ -56,12 +57,18 @@ function CreateSchedulerForm({
   handleDrop,
   handleImageClick,
   handleImageChange,
-  image,
+  files,
   inputRef,
   loading,
   facilities,
   facility,
+  handleImageSubmit,
+  imageData,
+  uploading,
+  setUploading,
+  setImageData,
   setFacility,
+  imageUploadError,
 }) {
   const theme = useTheme();
   const {
@@ -73,6 +80,12 @@ function CreateSchedulerForm({
     control,
     formState: { errors },
   } = methods;
+
+  const handleRemoveImage = (index) => {
+    setImageData(imageData.filter((_, i) => i !== index));
+  };
+
+  console.log(imageData)
   return (
     <Paper
       elevation={4}
@@ -110,14 +123,20 @@ function CreateSchedulerForm({
               pl: { xs: 1, sm: 0 },
               alignItems: "center",
               marginRight: { xs: "0px", sm: "30px" },
+              justifyContent: "space-between",
             }}
           >
-            {image ? (
-              <img
-                style={{ width: "100%", height: "100%" }}
-                src={URL.createObjectURL(image)}
-                alt="school-logo"
-              />
+            {files.length > 1 ? (
+              <Box>
+                <img
+                  style={{ width: "100%", height: "100%" }}
+                  src={URL.createObjectURL(files[0])}
+                  alt="school-logo"
+                />
+                <Typography>
+                  {files.length} {files.length > 1 ? "files" : "file"} selected
+                </Typography>
+              </Box>
             ) : (
               <img
                 style={{ width: "100%", height: "100%" }}
@@ -140,7 +159,14 @@ function CreateSchedulerForm({
               onClick={handleImageClick}
             >
               <CloudArrowUp size={32} color="black" />
-              <input type="file" ref={inputRef} style={{ display: "none" }} />
+              <input
+                type="file"
+                ref={inputRef}
+                // {...register("imageUrl")}
+                accept="image/*"
+                style={{ display: "none" }}
+                multiple
+              />
             </IconButton>
             <Typography
               fontSize={{ xs: "8px", sm: "13px" }}
@@ -148,7 +174,46 @@ function CreateSchedulerForm({
             >
               Click to upload or drag and drop scheduler thumbnail image (JPG){" "}
             </Typography>
+            <Typography sx={{ color: "red" }}>
+              {imageUploadError && imageUploadError}
+            </Typography>
+            {imageData.length >= 1 &&
+              imageData.map((url, index) => {
+                return <Stack
+                  key={url}
+                  direction={"row"}
+                  sx={{ justifyContent: "space-between", alignItems: "center" }}
+                >
+                  <img
+                    src={url}
+                    alt="scheduler images"
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                      objectPosition: "cover",
+                      borderRadius: "10px",
+                    }}
+                  />
+                  <Button
+                    disabled={uploading}
+                    type="button"
+                    onClick={() => handleRemoveImage(index)}
+                    sx={{ padding: "3px", color: "red", borderRadius: "10px" }}
+                  >
+                    {uploading ? <CircularProgress /> : "DELETE"}
+                  </Button>
+                </Stack>;
+              })}
+            <Button
+              variant="contained"
+              color="primary"
+              type="button"
+              onClick={handleImageSubmit}
+            >
+              UPLOAD
+            </Button>
           </Stack>
+          
         </Stack>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
@@ -159,7 +224,9 @@ function CreateSchedulerForm({
               name="lectureTheatre"
               {...register("lectureTheatre")}
             >
-              <MenuItem value="placeholder">Lecture theatre</MenuItem>
+              <MenuItem disabled value="placeholder">
+                Lecture theatre
+              </MenuItem>
               <MenuItem value="SUB">SUB</MenuItem>
               <MenuItem value="UI">UI</MenuItem>
               <MenuItem value="TRD">TRD</MenuItem>
@@ -181,7 +248,9 @@ function CreateSchedulerForm({
               sx={{ height: "40px" }}
               {...register("location")}
             >
-              <MenuItem value="placeholder">Location</MenuItem>
+              <MenuItem disabled value="placeholder">
+                Location
+              </MenuItem>
               <MenuItem value="SUB">SUB</MenuItem>
               <MenuItem value="UI">UI</MenuItem>
               <MenuItem value="TRD">TRD</MenuItem>
@@ -205,7 +274,9 @@ function CreateSchedulerForm({
               sx={{ height: "40px" }}
               {...register("capacity")}
             >
-              <MenuItem value="placeholder">Capacity</MenuItem>
+              <MenuItem disabled value="placeholder">
+                Capacity
+              </MenuItem>
               <MenuItem value="SUB">SUB</MenuItem>
               <MenuItem value="UI">UI</MenuItem>
               <MenuItem value="TRD">TRD</MenuItem>
@@ -221,7 +292,7 @@ function CreateSchedulerForm({
             </Typography>
           </Grid>
 
-          <Grid items xs={12} sm={12} sx={{paddingLeft:"16px"}}>
+          <Grid items xs={12} sm={8} sx={{ paddingLeft: "16px" }}>
             <FormControl sx={{ marginTop: "20px" }} fullWidth>
               <InputLabel id="demo-multiple-name-label">Facilities</InputLabel>
               <Select
@@ -255,11 +326,26 @@ function CreateSchedulerForm({
                 ))}
               </Select>
             </FormControl>
-            <Typography variant="body2">
-              Pick three top area of interest
-            </Typography>
             <Typography sx={{ color: "red" }}>
               {errors.facilities?.message}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Select
+              defaultValue="placeholder"
+              name="status"
+              fullWidth
+              sx={{ height: "59px" }}
+              {...register("status")}
+            >
+              <MenuItem disabled value="placeholder">
+                Status
+              </MenuItem>
+              <MenuItem value="Active">Active</MenuItem>
+              <MenuItem value="Inactive">Inactive</MenuItem>
+            </Select>
+            <Typography sx={{ color: "red" }}>
+              {errors.status?.message}
             </Typography>
           </Grid>
 

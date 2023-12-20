@@ -13,23 +13,42 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import {
+  deleteAdminStart,
+  deleteAdminFailure,
+  deleteAdminSuccess,
+} from "../../redux/delete-admin/deleteAdmin";
 
-const DeleteAdmin = ({ openDeleteAdmin, handleClose }) => {
+const DeleteAdmin = ({ openDeleteAdmin, handleClose, selectedUser }) => {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+
+  const dispatch = useDispatch();
+  console.log(selectedUser);
+
+  const selectedUserId = selectedUser?._id;
+  console.log(selectedUserId);
 
   const handleDeleteClick = async () => {
     setIsDeleteLoading(true);
     try {
+      dispatch(deleteAdminStart());
       const response = await axios.delete(
-        "http://localhost:3000/admin/delete-admin/:id"
+        `http://localhost:3000/admin/delete-admin/${selectedUserId}`
       );
+      dispatch(deleteAdminSuccess());
+      toast.success("Admin deleted successfully!");
       if (response.status === 200) {
         handleClose();
       }
     } catch (error) {
       console.log("Deletion failed!", error);
-    }finally{
-      setIsDeleteLoading(false)
+      toast.error("Deletion failed!");
+    } finally {
+      dispatch(deleteAdminFailure(error.message));
+      setIsDeleteLoading(false);
     }
   };
   const buttonStyle = {

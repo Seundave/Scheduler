@@ -69,6 +69,7 @@ const CreateAdmin = ({ openAdminPopup, handleClose }) => {
       toast.success("Admin created successfully!");
       // console.log(res.data);
       reset();
+      handleClose();
       // window.location.reload();
     } catch (error) {
       console.log("Error submitting form", error);
@@ -107,7 +108,9 @@ const CreateAdmin = ({ openAdminPopup, handleClose }) => {
                 name="faculty"
                 {...register("faculty")}
               >
-                <MenuItem value="placeholder">FACULTY</MenuItem>
+                <MenuItem disabled value="placeholder">
+                  FACULTY
+                </MenuItem>
                 <MenuItem value="FACULTY OF AGRICULTURE AND FORESTRY">
                   FACULTY OF AGRICULTURE AND FORESTRY
                 </MenuItem>
@@ -149,7 +152,9 @@ const CreateAdmin = ({ openAdminPopup, handleClose }) => {
                 name="department"
                 {...register("department")}
               >
-                <MenuItem value="placeholder">DEPARTMENT</MenuItem>
+                <MenuItem disabled value="placeholder">
+                  DEPARTMENT
+                </MenuItem>
                 <MenuItem value="DEPARTMENT OF ANIMAL SCIENCE">
                   DEPARTMENT OF ANIMAL SCIENCE
                 </MenuItem>
@@ -202,7 +207,9 @@ const CreateAdmin = ({ openAdminPopup, handleClose }) => {
                 name="resource"
                 {...register("resource")}
               >
-                <MenuItem value="placeholder">RESOURCE</MenuItem>
+                <MenuItem disabled value="placeholder">
+                  RESOURCE
+                </MenuItem>
                 <MenuItem value="SUB">SUB</MenuItem>
                 <MenuItem value="UI">UI</MenuItem>
                 <MenuItem value="TRD">TRD</MenuItem>
@@ -243,7 +250,7 @@ const CreateAdmin = ({ openAdminPopup, handleClose }) => {
           variant="contained"
           color="primary"
           type="submit"
-          sx={{ marginTop: "20px", marginBottom: "40px", height: "40px" }}
+          sx={{ marginTop: "20px", marginBottom: "40px", height: "45px" }}
           fullWidth
         >
           {loading ? (

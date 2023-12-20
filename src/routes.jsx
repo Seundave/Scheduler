@@ -16,11 +16,7 @@ import GalleryPage from "./pages/GalleryPage";
 // ----------------------------------------------------------------------
 
 export default function Router() {
-  const logout = () => {
-    localStorage.clear();
-    sessionStorage.clear();
-    navigate("/login");
-  };
+
 
   const handleSchedule = () => {
     navigate("/schedule");
@@ -59,7 +55,7 @@ export default function Router() {
     },
     {
       path: "logout",
-      element: <LogOut onClick={logout} />,
+      element: <LogOut  />,
     },
     {
       path: "schedule",

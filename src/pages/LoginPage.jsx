@@ -9,6 +9,8 @@ import Logo from '../components/logo';
 import Iconify from '../components/iconify';
 // sections
 import { LoginForm } from '../sections/auth/login';
+import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -41,8 +43,11 @@ const StyledContent = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function LoginPage() {
+  const {currentUser} = useSelector((state)=>state.user)
   const mdUp = useResponsive('up', 'md');
-
+  if (currentUser) {
+    return <Navigate to="/dashboard" />;
+  }
   return (
     <>
       <Helmet>

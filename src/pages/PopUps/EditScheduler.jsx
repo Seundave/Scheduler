@@ -10,13 +10,87 @@ import {
   Select,
   Box,
   IconButton,
+  FormControl,
+  InputLabel,
+  Chip,
 } from "@mui/material";
 import { CloudArrowUp } from "@phosphor-icons/react";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 import UniversityLogo from "../../assets/university.png";
+import { useTheme } from "@mui/material/styles";
+import { createScheduler } from "../../validation/createScheduler";
+
+const adminFormSchema = yup.object().shape({
+  name: yup.string().required("Name is required"),
+  faculty: yup.string().required("Faculty is required"),
+  department: yup.string().required("Department is required"),
+  resource: yup.string().required("Resource is required"),
+  password: yup.string().required("Password is required"),
+  email: yup.string().email().required("Email address is required"),
+});
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const names = [
+  "Network Design",
+  "Hardware",
+  "Software",
+  "Graphic Design",
+  "Cybersecurity",
+  "Web design",
+  "Broadcasting",
+];
+
+function getStyles(name, facility, theme) {
+  return {
+    fontWeight:
+      facility.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
+  };
+}
 
 const EditScheduler = ({ openEditScheduler, handleClose }) => {
+  const [facility, setFacility] = React.useState([]);
   const [image, setImage] = useState();
   const inputRef = useRef(null);
+  const theme = useTheme();
+
+  const methods = useForm({
+    defaultValues: {
+      imageUrl:[],
+      lectureTheatre: "",
+      location: "",
+      capacity: "",
+      facilities: [],
+      status:"",
+      description: "",
+    },
+    resolver: yupResolver(createScheduler),
+  });
+
+  const {
+    reset,
+    setError,
+    handleSubmit,
+    register,
+    setValue,
+    watch,
+    formState: { errors },
+  } = methods;
+
+  const facilities = watch("facilities", []);
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -114,35 +188,144 @@ const EditScheduler = ({ openEditScheduler, handleClose }) => {
                 defaultValue="placeholder"
                 fullWidth
                 sx={{ height: "40px" }}
+                name="lectureTheatre"
+                {...register("lectureTheatre")}
               >
-                <MenuItem value="placeholder">Lecture theatre</MenuItem>
+                <MenuItem disabled value="placeholder">
+                  Lecture theatre
+                </MenuItem>
+                <MenuItem value="SUB">SUB</MenuItem>
+                <MenuItem value="UI">UI</MenuItem>
+                <MenuItem value="TRD">TRD</MenuItem>
+                <MenuItem value="Bookshop">Bookshop</MenuItem>
+                <MenuItem value="ITeMS">ITeMS</MenuItem>
+                <MenuItem value="works">Works and Maintenance</MenuItem>
+                <MenuItem value="science">Science</MenuItem>
               </Select>
+              <Typography sx={{ color: "red" }}>
+                {errors.lectureTheatre?.message}
+              </Typography>
             </Grid>
 
             <Grid item xs={12} sm={4}>
               <Select
                 defaultValue="placeholder"
+                name="location"
                 fullWidth
                 sx={{ height: "40px" }}
+                {...register("location")}
               >
-                <MenuItem value="placeholder">Location</MenuItem>
+                <MenuItem disabled value="placeholder">
+                  Location
+                </MenuItem>
+                <MenuItem value="SUB">SUB</MenuItem>
+                <MenuItem value="UI">UI</MenuItem>
+                <MenuItem value="TRD">TRD</MenuItem>
+                <MenuItem value="Bookshop">Bookshop</MenuItem>
+                <MenuItem value="ITeMS">ITeMS</MenuItem>
+                <MenuItem value="works and maintenance">
+                  Works and Maintenance
+                </MenuItem>
+                <MenuItem value="science">Science</MenuItem>
               </Select>
+              <Typography sx={{ color: "red" }}>
+                {errors.location?.message}
+              </Typography>
             </Grid>
 
             <Grid item xs={12} sm={4}>
               <Select
                 defaultValue="placeholder"
+                name="capacity"
                 fullWidth
                 sx={{ height: "40px" }}
+                {...register("capacity")}
               >
-                <MenuItem value="placeholder">Capacity</MenuItem>
+                <MenuItem disabled value="placeholder">
+                  Capacity
+                </MenuItem>
+                <MenuItem value="SUB">SUB</MenuItem>
+                <MenuItem value="UI">UI</MenuItem>
+                <MenuItem value="TRD">TRD</MenuItem>
+                <MenuItem value="Bookshop">Bookshop</MenuItem>
+                <MenuItem value="ITeMS">ITeMS</MenuItem>
+                <MenuItem value="works and maintenance">
+                  Works and Maintenance
+                </MenuItem>
+                <MenuItem value="science">Science</MenuItem>
               </Select>
+              <Typography sx={{ color: "red" }}>
+                {errors.capacity?.message}
+              </Typography>
+            </Grid>
+
+            <Grid items xs={12} sm={8} sx={{ paddingLeft: "16px" }}>
+              <FormControl sx={{ marginTop: "20px" }} fullWidth>
+                <InputLabel id="demo-multiple-name-label">
+                  Facilities
+                </InputLabel>
+                <Select
+                  labelId="demo-multiple-name-label"
+                  id="demo-multiple-name"
+                  multiple
+                  value={facilities}
+                  // value={specialty}
+                  // onChange={handleChange}
+                  // name="interest"
+                  {...register("facilities")}
+                  // {...register("interest")}
+                  renderValue={(selected, index) => (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                      {selected?.map((value, index) => (
+                        <Chip
+                          key={value}
+                          label={index + 1 + "." + " " + value}
+                        />
+                      ))}
+                    </Box>
+                  )}
+                  // input={<OutlinedInput label="Special Interest" />}
+                  MenuProps={MenuProps}
+                >
+                  {names.map((name) => (
+                    <MenuItem
+                      key={name}
+                      value={name}
+                      style={getStyles(name, facility, theme)}
+                    >
+                      {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Typography sx={{ color: "red" }}>
+                {errors.facilities?.message}
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
+              <Select
+                defaultValue="placeholder"
+                name="status"
+                fullWidth
+                sx={{ height: "59px" }}
+                {...register("status")}
+              >
+                <MenuItem disabled value="placeholder">
+                  Status
+                </MenuItem>
+                <MenuItem value="Active">Active</MenuItem>
+                <MenuItem value="Inactive">Inactive</MenuItem>
+              </Select>
+              <Typography sx={{ color: "red" }}>
+                {errors.status?.message}
+              </Typography>
             </Grid>
 
             <Grid item xs={12} sm={12}>
               <TextField
                 placeholder="Description"
-                name="message"
+                name="description"
                 multiline
                 rows={6}
                 fullWidth

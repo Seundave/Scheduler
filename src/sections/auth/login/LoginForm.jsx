@@ -72,10 +72,11 @@ export default function LoginForm() {
       navigate("/dashboard", { replace: true });
       // setError(null);
     } catch (error) {
-      console.log("Error signing in", error);
+      // console.log("Error signing in", error);
 
       dispatch(signInFailure(error.message));
-      toast.error("Wrong crendentials!");
+      toast.error(error.response.data.message);
+      // console.log(error.response.data.message)
     }
   };
 
@@ -152,7 +153,7 @@ export default function LoginForm() {
               "LOGIN"
             )}
           </Button>
-          {error && <Typography sx={{ color: "red" }}>{error}</Typography>}
+          {/* {error && <Typography sx={{ color: "red" }}>{error}</Typography>} */}
         </Stack>
       </form>
     </>

@@ -93,6 +93,8 @@ const ITEM_HEIGHT = 48;
 export default function GalleryPage() {
   const [schedulerData, setSchedulerData] = useState([]);
 
+  const [imageUploadError, setImageUploadError] = useState(false);
+
   const [anchorEl, setAnchorEl] = useState(null);
 
   const [openEditScheduler, setOpenEditScheduler] = useState(false);
@@ -369,6 +371,7 @@ export default function GalleryPage() {
               openEditScheduler={openEditScheduler}
               handleClose={() => setOpenEditScheduler(false)}
               onSubmit={onSubmit}
+              imageUploadError={imageUploadError}
               // handleDeleteClick={handleDeleteClick}
               // id={activeNotification._id}
             />

@@ -9,6 +9,9 @@ import {
   Typography,
   CircularProgress,
   Box,
+  FormControl,
+  InputLabel,
+  Chip,
 } from "@mui/material";
 import axios from "axios";
 import PopUpModal from "../../PopUpModal";
@@ -18,6 +21,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
+import { useTheme } from "@mui/material/styles";
 import {
   createAdminFailure,
   createAdminSuccess,
@@ -32,9 +36,41 @@ const adminFormSchema = yup.object().shape({
   password: yup.string().required("Password is required"),
   email: yup.string().email().required("Email address is required"),
 });
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const names = [
+  "Network Design",
+  "Hardware",
+  "Software",
+  "Graphic Design",
+  "Cybersecurity",
+  "Web design",
+  "Broadcasting",
+];
+
+function getStyles(name, facility, theme) {
+  return {
+    fontWeight:
+      facility.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
+  };
+}
 const FilterScheduler = ({ openSchedulerFilter, handleClose }) => {
   const dispatch = useDispatch();
+  const theme = useTheme();
   const { loading, error } = useSelector((state) => state.admin);
+  const [facility, setFacility] = React.useState([]);
   const methods = useForm({
     defaultValues: {
       name: "",
@@ -53,8 +89,11 @@ const FilterScheduler = ({ openSchedulerFilter, handleClose }) => {
     handleSubmit,
     register,
     setValue,
+    watch,
     formState: { errors },
   } = methods;
+
+  const facilities = watch("facilities", []);
 
   const onSubmit = async (data) => {
     try {
@@ -143,6 +182,7 @@ const FilterScheduler = ({ openSchedulerFilter, handleClose }) => {
                 </MenuItem>
               </Select>
             </Grid>
+
             <Grid
               item
               xs={12}
@@ -209,13 +249,71 @@ const FilterScheduler = ({ openSchedulerFilter, handleClose }) => {
                 </MenuItem>
               </Select>
             </Grid>
+
+            <Grid
+              item
+              xs={12}
+              sm={3}
+              //   sx={{ justifyContent: "center", alignItems: "center", width:"100px" }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                sx={{ height: "58px" }}
+                fullWidth
+              >
+                FACILITIES
+              </Button>
+            </Grid>
+
+            <Grid items xs={12} sm={9} sx={{ paddingLeft: "16px" }}>
+              <FormControl sx={{ marginTop: "20px" }} fullWidth>
+                <Select
+                  labelId="demo-multiple-name-label"
+                  id="demo-multiple-name"
+                  multiple
+                  value={facilities}
+                  // value={specialty}
+                  // onChange={handleChange}
+                  // name="interest"
+                  {...register("facilities")}
+                  // {...register("interest")}
+                  renderValue={(selected, index) => (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                      {selected?.map((value, index) => (
+                        <Chip
+                          key={value}
+                          label={index + 1 + "." + " " + value}
+                        />
+                      ))}
+                    </Box>
+                  )}
+                  // input={<OutlinedInput label="Special Interest" />}
+                  MenuProps={MenuProps}
+                >
+                  {names.map((name) => (
+                    <MenuItem
+                      key={name}
+                      value={name}
+                      style={getStyles(name, facility, theme)}
+                    >
+                      {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Typography sx={{ color: "red" }}>
+                {errors.facilities?.message}
+              </Typography>
+            </Grid>
           </Grid>
         </Stack>
         <Button
           variant="contained"
           color="primary"
           type="submit"
-          sx={{ marginTop: "20px", marginBottom: "40px", height: "40px" }}
+          sx={{ marginTop: "20px", marginBottom: "40px", height: "45px" }}
           fullWidth
         >
           {loading ? (

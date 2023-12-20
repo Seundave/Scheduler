@@ -14,7 +14,7 @@ function isValidFileType(fileName, fileType) {
 const MAX_FILE_SIZE = 1024000;
 
 export const createScheduler = yup.object().shape({
-  // photo: yup
+  // imageUrl: yup
   //   .mixed()
   //   .required("Required")
   //   .test("is-valid-type", "Not a valid image type", (value) =>
@@ -25,11 +25,11 @@ export const createScheduler = yup.object().shape({
   //     "Max allowed size is 100KB",
   //     (value) => value && value.size <= MAX_FILE_SIZE
   //   ),
+  imageUrl: yup.array().min(1),
   lectureTheatre: yup.string().required("Lecture Theatre is required"),
   location: yup.string().required("Location is required"),
   capacity: yup.string().required("Capacity is required"),
-  facilites: yup
-    .array()
-    .min(1, "Please select at least one facility."),
+  facilities: yup.array().min(1, "Please select at least one facility."),
+  status: yup.string().required("Status is required"),
   description: yup.string().required("Description is required"),
 });

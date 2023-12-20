@@ -156,7 +156,7 @@ const CardSlider = () => {
                       <Typography variant="body1">
                         {item.description}
                       </Typography>
-                      <Button
+                      {/* <Button
                         sx={{
                           bgcolor: "white",
                           width: "150px",
@@ -164,7 +164,7 @@ const CardSlider = () => {
                         }}
                       >
                         View more
-                      </Button>
+                      </Button> */}
                     </Box>
                   )}
                 </div>

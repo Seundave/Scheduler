@@ -7,6 +7,7 @@ import {
   Typography,
   MenuItem,
   Select,
+  CircularProgress,
 } from "@mui/material";
 import PopUpModal from "../../PopUpModal";
 import * as yup from "yup";
@@ -14,8 +15,20 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  editAdminFailure,
+  editAdminSuccess,
+  editAdminStart,
+} from "../../redux/edit-admin/editAdmin";
+import { updateAdminList } from "../../redux/get-admins/getAdmins";
 
-const EditAdminDetails = ({ openEditAdminDetails, handleClose }) => {
+const EditAdminDetails = ({
+  openEditAdminDetails,
+  handleClose,
+  selectedUser,
+}) => {
   const adminFormSchema = yup.object().shape({
     name: yup.string().required("Name is required"),
     faculty: yup.string().required("Faculty is required"),
@@ -23,17 +36,23 @@ const EditAdminDetails = ({ openEditAdminDetails, handleClose }) => {
     resource: yup.string().required("Resource is required"),
     email: yup.string().email().required("Email address is required"),
   });
+  const { loading } = useSelector((state) => state.admin);
+  const dispatch = useDispatch();
+  console.log(selectedUser);
+
+  const selectedUserId = selectedUser?._id;
+  console.log(selectedUserId);
 
   const methods = useForm({
     defaultValues: {
-      name: "",
-      faculty: "",
-      department: "",
-      resource: "",
+      name: selectedUser.name,
+      faculty: selectedUser?.faculty,
+      department: selectedUser?.department,
+      resource: selectedUser?.resource,
       password: "",
-      email: "",
+      email: selectedUser?.email,
     },
-    resolver: yupResolver(adminFormSchema),
+    // resolver: yupResolver(adminFormSchema),
   });
 
   const {
@@ -47,22 +66,22 @@ const EditAdminDetails = ({ openEditAdminDetails, handleClose }) => {
 
   const onSubmit = async (data) => {
     try {
-      // dispatch(createAdminStart());
+      dispatch(editAdminStart());
       const res = await axios.patch(
-        "http://localhost:3000/admin/update-admin/65799396ceefbe4277794e49",
+        `http://localhost:3000/admin/update-admin/${selectedUserId}`,
         data
       );
-      console.log("Admin details updated successfully", res.data);
-      console.log(res);
-      // dispatch(createAdminSuccess(res.data));
-      // toast.success("Admin created successfully!");
+      dispatch(updateAdminList(res.data))
+      dispatch(editAdminSuccess(res.data));
+      toast.success("Admin details updated successfully!");
       // console.log(res.data);
       reset();
+      handleClose();
       // window.location.reload();
     } catch (error) {
       console.log("Error submitting form", error);
-      // toast.error("Error creating admin!");
-      // dispatch(createAdminFailure(error.message));
+      toast.error("Error updating admin!");
+      dispatch(editAdminFailure(error.message));
     }
   };
   return (
@@ -88,13 +107,17 @@ const EditAdminDetails = ({ openEditAdminDetails, handleClose }) => {
             <Grid item xs={12} sm={6}>
               {/* <TextField name="title" placeholder="Faculty" fullWidth /> */}
               <Select
-                defaultValue="placeholder"
+                defaultValue={
+                  selectedUser.faculty ? selectedUser.faculty : "placeholer"
+                }
                 fullWidth
                 sx={{ height: "55px" }}
                 name="faculty"
                 {...register("faculty")}
               >
-                <MenuItem value="placeholder">FACULTY</MenuItem>
+                <MenuItem disabled value="placeholder">
+                  FACULTY
+                </MenuItem>
                 <MenuItem value="FACULTY OF AGRICULTURE AND FORESTRY">
                   FACULTY OF AGRICULTURE AND FORESTRY
                 </MenuItem>
@@ -128,13 +151,19 @@ const EditAdminDetails = ({ openEditAdminDetails, handleClose }) => {
             <Grid item xs={12} sm={6}>
               {/* <TextField name="title" placeholder="Department" fullWidth /> */}
               <Select
-                defaultValue="placeholder"
+                defaultValue={
+                  selectedUser.department
+                    ? selectedUser.department
+                    : "placeholer"
+                }
                 fullWidth
                 sx={{ height: "55px" }}
                 name="department"
                 {...register("department")}
               >
-                <MenuItem value="placeholder">DEPARTMENT</MenuItem>
+                <MenuItem disabled value="placeholder">
+                  DEPARTMENT
+                </MenuItem>
                 <MenuItem value="DEPARTMENT OF ANIMAL SCIENCE">
                   DEPARTMENT OF ANIMAL SCIENCE
                 </MenuItem>
@@ -197,7 +226,20 @@ const EditAdminDetails = ({ openEditAdminDetails, handleClose }) => {
           }}
           fullWidth
         >
-          Save
+          {loading ? (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: "50px",
+                height: "50px",
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          ) : (
+            "Save"
+          )}
         </Button>
       </form>
     </PopUpModal>
