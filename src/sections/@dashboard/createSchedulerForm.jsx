@@ -32,13 +32,13 @@ const MenuProps = {
 };
 
 const names = [
-  "Network Design",
-  "Hardware",
-  "Software",
-  "Graphic Design",
-  "Cybersecurity",
-  "Web design",
-  "Broadcasting",
+  "Audio-Visual Equipment",
+  "Interactive Whiteboards or Smartboards",
+  "Wireless Connectivity",
+  "Microphones and Audio Distribution",
+  "Collaborative Spaces",
+  "Accessible Restrooms",
+  "Multiple Display Screens",
 ];
 
 function getStyles(name, facility, theme) {
@@ -85,7 +85,7 @@ function CreateSchedulerForm({
     setImageData(imageData.filter((_, i) => i !== index));
   };
 
-  console.log(imageData)
+  console.log(imageData);
   return (
     <Paper
       elevation={4}
@@ -151,6 +151,7 @@ function CreateSchedulerForm({
               // width: "318.9px",
               alignItems: "center",
               maxWidth: "100%",
+              marginLeft: "20px",
             }}
           >
             <IconButton
@@ -179,30 +180,43 @@ function CreateSchedulerForm({
             </Typography>
             {imageData.length >= 1 &&
               imageData.map((url, index) => {
-                return <Stack
-                  key={url}
-                  direction={"row"}
-                  sx={{ justifyContent: "space-between", alignItems: "center" }}
-                >
-                  <img
-                    src={url}
-                    alt="scheduler images"
-                    style={{
-                      width: "20px",
-                      height: "20px",
-                      objectPosition: "cover",
-                      borderRadius: "10px",
+                return (
+                  <Stack
+                    key={url}
+                    direction={"row"}
+                    sx={{
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      width: "100%",
+                      border: "1px dashed #DCE0E4",
                     }}
-                  />
-                  <Button
-                    disabled={uploading}
-                    type="button"
-                    onClick={() => handleRemoveImage(index)}
-                    sx={{ padding: "3px", color: "red", borderRadius: "10px" }}
                   >
-                    {uploading ? <CircularProgress /> : "DELETE"}
-                  </Button>
-                </Stack>;
+                    <img
+                      src={url}
+                      alt="scheduler images"
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectPosition: "cover",
+                        borderRadius: "10px",
+                        marginTop: "10px",
+                        marginBottom: "10px",
+                      }}
+                    />
+                    <Button
+                      disabled={uploading}
+                      type="button"
+                      onClick={() => handleRemoveImage(index)}
+                      sx={{
+                        padding: "3px",
+                        color: "red",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      {uploading ? <CircularProgress /> : "DELETE"}
+                    </Button>
+                  </Stack>
+                );
               })}
             <Button
               variant="contained"
@@ -213,7 +227,6 @@ function CreateSchedulerForm({
               UPLOAD
             </Button>
           </Stack>
-          
         </Stack>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
@@ -227,13 +240,27 @@ function CreateSchedulerForm({
               <MenuItem disabled value="placeholder">
                 Lecture theatre
               </MenuItem>
-              <MenuItem value="SUB">SUB</MenuItem>
-              <MenuItem value="UI">UI</MenuItem>
-              <MenuItem value="TRD">TRD</MenuItem>
-              <MenuItem value="Bookshop">Bookshop</MenuItem>
-              <MenuItem value="ITeMS">ITeMS</MenuItem>
-              <MenuItem value="works">Works and Maintenance</MenuItem>
-              <MenuItem value="science">Science</MenuItem>
+              <MenuItem value="Faculty of Science Lecture Theatre">
+                Faculty of Science Lecture Theatre
+              </MenuItem>
+              <MenuItem value="CBN Lecture Theatre">
+                CBN Lecture Theatre
+              </MenuItem>
+              <MenuItem value="Department of Chemistry Lecture Theatre">
+                Department of Chemistry Lecture Theatre
+              </MenuItem>
+              <MenuItem value="Faculty of Art Lecture Theatre">
+                Faculty of Art Lecture Theatre
+              </MenuItem>
+              <MenuItem value="Faculty of Law Lecture Theatre">
+                Faculty of Law Lecture Theatre
+              </MenuItem>
+              <MenuItem value="College of Medicine Lecture Theatre">
+                College of Medicine Lecture Theatre
+              </MenuItem>
+              <MenuItem value="Faculty of Agriculture Lecture Theatre">
+                Faculty of Agriculture Lecture Theatre
+              </MenuItem>
             </Select>
             <Typography sx={{ color: "red" }}>
               {errors.lectureTheatre?.message}
@@ -251,15 +278,21 @@ function CreateSchedulerForm({
               <MenuItem disabled value="placeholder">
                 Location
               </MenuItem>
-              <MenuItem value="SUB">SUB</MenuItem>
-              <MenuItem value="UI">UI</MenuItem>
-              <MenuItem value="TRD">TRD</MenuItem>
-              <MenuItem value="Bookshop">Bookshop</MenuItem>
-              <MenuItem value="ITeMS">ITeMS</MenuItem>
-              <MenuItem value="works and maintenance">
-                Works and Maintenance
+              <MenuItem value="The zoological garden">
+                The zoological garden
               </MenuItem>
-              <MenuItem value="science">Science</MenuItem>
+              <MenuItem value="The Botanical Garden">
+                The Botanical Garden
+              </MenuItem>
+              <MenuItem value="Love Garden">Love Garden</MenuItem>
+              <MenuItem value="Heritage Park">Heritage Park</MenuItem>
+              <MenuItem value="Awba Dam">Awba Dam</MenuItem>
+              <MenuItem value="Wole Soyinka theatre">
+                Wole Soyinka theatre
+              </MenuItem>
+              <MenuItem value="UI chapel/Central mosque">
+                UI chapel/Central mosque
+              </MenuItem>
             </Select>
             <Typography sx={{ color: "red" }}>
               {errors.location?.message}
@@ -277,15 +310,15 @@ function CreateSchedulerForm({
               <MenuItem disabled value="placeholder">
                 Capacity
               </MenuItem>
-              <MenuItem value="SUB">SUB</MenuItem>
-              <MenuItem value="UI">UI</MenuItem>
-              <MenuItem value="TRD">TRD</MenuItem>
-              <MenuItem value="Bookshop">Bookshop</MenuItem>
-              <MenuItem value="ITeMS">ITeMS</MenuItem>
-              <MenuItem value="works and maintenance">
-                Works and Maintenance
+              <MenuItem value="500 seaters">500 seaters</MenuItem>
+              <MenuItem value="600 seaters">600 seaters</MenuItem>
+              <MenuItem value="700 seaters">700 seaters</MenuItem>
+              <MenuItem value="800 seaters">800 seaters</MenuItem>
+              <MenuItem value="900 seaters">900 seaters</MenuItem>
+              <MenuItem value="1000 seaters">
+              1000 seaters
               </MenuItem>
-              <MenuItem value="science">Science</MenuItem>
+              <MenuItem value="1100 seaters">1100 seaters</MenuItem>
             </Select>
             <Typography sx={{ color: "red" }}>
               {errors.capacity?.message}

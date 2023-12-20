@@ -5,6 +5,7 @@ import adminReducer from "./create-admin/createAdmin";
 import editAdminReducer from "./edit-admin/editAdmin";
 import deleteAdminReducer from "./delete-admin/deleteAdmin";
 import getAdminReducer from "./get-admins/getAdmins";
+import getSchedulers from "./get-schedulers/getScheduler";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
   admin: adminReducer,
   editAdmin: editAdminReducer,
   deleteAdmin:deleteAdminReducer,
-  getAdmin:getAdminReducer
+  getAdmin:getAdminReducer,
+  getSchedulers:getSchedulers
 });
 
 const persistConfig = {

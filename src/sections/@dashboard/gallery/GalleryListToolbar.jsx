@@ -87,7 +87,7 @@ export default function GalleryListToolbar({
   };
 
   const handleSchedulerFilterPopup = () => {
-    console.log("Clicked");
+    console.log(openSchedulerFilter);
     setOpenSchedulerFilter((prev) => !prev);
   };
 
@@ -96,63 +96,55 @@ export default function GalleryListToolbar({
   };
 
   return (
-    <StyledRoot
-      sx={{
-        ...(numSelected > 0 && {
-          color: "primary.main",
-          bgcolor: "primary.lighter",
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography component="div" variant="subtitle1">
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <StyledSearch
-          value={filterName}
-          onChange={onFilterName}
-          placeholder="Search resource..."
-          startAdornment={
-            <InputAdornment position="start">
-              <Iconify
-                icon="eva:search-fill"
-                sx={{ color: "text.disabled", width: 20, height: 20 }}
-              />
-            </InputAdornment>
-          }
-        />
-      )}
+    <>
+      <StyledRoot
+        sx={{
+          ...(numSelected > 0 && {
+            color: "primary.main",
+            bgcolor: "primary.lighter",
+          }),
+        }}
+      >
+        {numSelected > 0 ? (
+          <Typography component="div" variant="subtitle1">
+            {numSelected} selected
+          </Typography>
+        ) : (
+          <StyledSearch
+            value={filterName}
+            onChange={onFilterName}
+            placeholder="Search resource..."
+            startAdornment={
+              <InputAdornment position="start">
+                <Iconify
+                  icon="eva:search-fill"
+                  sx={{ color: "text.disabled", width: 20, height: 20 }}
+                />
+              </InputAdornment>
+            }
+          />
+        )}
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <Iconify icon="eva:trash-2-fill" />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <>
-          <Tooltip title="Filter list">
-            <IconButton
-              aria-controls={open ? "basic-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              onClick={handleSchedulerFilterPopup}
-            >
-              <Iconify icon="ic:round-filter-list" />
+        {numSelected > 0 ? (
+          <Tooltip title="Delete">
+            <IconButton>
+              <Iconify icon="eva:trash-2-fill" />
             </IconButton>
           </Tooltip>
+        ) : (
+          <>
+            <Tooltip title="Filter list">
+              <IconButton
+                aria-controls={open ? "basic-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={handleSchedulerFilterPopup}
+              >
+                <Iconify icon="ic:round-filter-list" />
+              </IconButton>
+            </Tooltip>
 
-          {openSchedulerFilter && (
-            <FilterScheduler
-              openSchedulerFilter={openSchedulerFilter}
-              handleClose={() => setOpenSchedulerFilter(false)}
-              onSubmit={onSubmit}
-              // handleDeleteClick={handleDeleteClick}
-              // id={activeNotification._id}
-            />
-          )}
-          {/* <Menu
+            {/* <Menu
             id="basic-menu"
             anchorEl={anchorEl}
             open={open}
@@ -181,8 +173,19 @@ export default function GalleryListToolbar({
               />
             </FormGroup>
           </Menu> */}
-        </>
+          </>
+        )}
+      </StyledRoot>
+
+      {openSchedulerFilter && (
+        <FilterScheduler
+          openSchedulerFilter={openSchedulerFilter}
+          handleClose={() => setOpenSchedulerFilter(false)}
+          onSubmit={onSubmit}
+          // handleDeleteClick={handleDeleteClick}
+          // id={activeNotification._id}
+        />
       )}
-    </StyledRoot>
+    </>
   );
 }
