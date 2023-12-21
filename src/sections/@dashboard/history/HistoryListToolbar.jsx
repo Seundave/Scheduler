@@ -112,7 +112,7 @@ export default function HistoryListToolbar({
           <StyledSearch
             value={filterName}
             onChange={onFilterName}
-            placeholder="Search user..."
+            placeholder="Search scheduler..."
             startAdornment={
               <InputAdornment position="start">
                 <Iconify

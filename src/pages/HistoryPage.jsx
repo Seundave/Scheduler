@@ -88,7 +88,7 @@ export default function HistoryPage() {
 
   const dispatch = useDispatch()
 
-  const {loading, error} = useSelector((state)=>state.getSchedulers)
+  const {loading, error, allSchedulers} = useSelector((state)=>state.getSchedulers)
 
   const [isloading, setIsLoading] = useState(true);
 
@@ -122,9 +122,9 @@ export default function HistoryPage() {
           "http://localhost:3000/scheduler/get-schedulers"
         );
         console.log(response);
-        const fetchedSchedulers = response.data;
+        // const fetchedSchedulers = response.data;
         dispatch(getSchedulerSuccess(response.data))
-        setSchedulers(fetchedSchedulers);
+        // setSchedulers(fetchedSchedulers);
         setIsLoading(false);
       } catch (error) {
         console.log("Error fetching admins", error);
@@ -135,7 +135,7 @@ export default function HistoryPage() {
     fetchSchedulers();
   }, []);
 
-  console.log(schedulers);
+  console.log(allSchedulers);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -145,7 +145,7 @@ export default function HistoryPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = schedulers.map((n) => n.name);
+      const newSelecteds = allSchedulers.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -185,10 +185,10 @@ export default function HistoryPage() {
   };
 
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - schedulers.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - allSchedulers.length) : 0;
 
   const filteredSchedulers = applySortFilter(
-    schedulers,
+    allSchedulers,
     getComparator(order, orderBy),
     filterName
   );
@@ -227,7 +227,7 @@ export default function HistoryPage() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={schedulers.length}
+                  rowCount={allSchedulers.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
@@ -347,7 +347,7 @@ export default function HistoryPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={schedulers.length}
+            count={allSchedulers.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

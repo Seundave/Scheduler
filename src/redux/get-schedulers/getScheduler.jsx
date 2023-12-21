@@ -14,7 +14,7 @@ const getSchedulerSlice = createSlice({
       state.loading = true;
     },
     getSchedulerSuccess: (state, action) => {
-      state.allAdmins = action.payload;
+      state.allSchedulers = action.payload;
       state.loading = false;
       state.error = null;
     },
