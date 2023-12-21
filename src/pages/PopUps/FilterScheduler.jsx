@@ -27,14 +27,16 @@ import {
   createAdminSuccess,
   createAdminStart,
 } from "../../redux/create-admin/createAdmin";
+import {
+  getFilteredSchedulerFailure,
+  getFilteredSchedulerStart,
+  getFilteredSchedulerSuccess,
+} from "../../redux/get-schedulers/getScheduler";
 
 const adminFormSchema = yup.object().shape({
-  name: yup.string().required("Name is required"),
-  faculty: yup.string().required("Faculty is required"),
-  department: yup.string().required("Department is required"),
-  resource: yup.string().required("Resource is required"),
-  password: yup.string().required("Password is required"),
-  email: yup.string().email().required("Email address is required"),
+  location: yup.string(),
+  locationTheatre: yup.string(),
+  facilities: yup.array(),
 });
 
 const ITEM_HEIGHT = 48;
@@ -49,13 +51,13 @@ const MenuProps = {
 };
 
 const names = [
-  "Network Design",
-  "Hardware",
-  "Software",
-  "Graphic Design",
-  "Cybersecurity",
-  "Web design",
-  "Broadcasting",
+  "Audio-Visual Equipment",
+  "Interactive Whiteboards or Smartboards",
+  "Wireless Connectivity",
+  "Microphones and Audio Distribution",
+  "Collaborative Spaces",
+  "Accessible Restrooms",
+  "Multiple Display Screens",
 ];
 
 function getStyles(name, facility, theme) {
@@ -73,12 +75,9 @@ const FilterScheduler = ({ openSchedulerFilter, handleClose }) => {
   const [facility, setFacility] = React.useState([]);
   const methods = useForm({
     defaultValues: {
-      name: "",
-      faculty: "",
-      department: "",
-      resource: "",
-      password: "",
-      email: "",
+      location: "",
+      lectureTheatre: "",
+      facilities: [],
     },
     resolver: yupResolver(adminFormSchema),
   });
@@ -97,22 +96,19 @@ const FilterScheduler = ({ openSchedulerFilter, handleClose }) => {
 
   const onSubmit = async (data) => {
     try {
-      dispatch(createAdminStart());
+      dispatch(getFilteredSchedulerStart());
       const res = await axios.post(
-        "http://localhost:3000/admin/create-admin",
+        "http://localhost:3000/scheduler/get-scheduler",
         data
       );
       console.log("Admin created successfully", res.data);
       console.log(res);
-      dispatch(createAdminSuccess(res.data));
-      toast.success("Admin created successfully!");
-      // console.log(res.data);
-      reset();
-      // window.location.reload();
+      dispatch(getFilteredSchedulerSuccess(res.data));
+      handleClose();
     } catch (error) {
       console.log("Error submitting form", error);
-      toast.error("Error creating admin!");
-      dispatch(createAdminFailure(error.message));
+      dispatch(getFilteredSchedulerFailure(error));
+      toast.error(error.response.data.message);
     }
   };
   return (
@@ -151,34 +147,23 @@ const FilterScheduler = ({ openSchedulerFilter, handleClose }) => {
                 name="faculty"
                 {...register("faculty")}
               >
-                <MenuItem value="placeholder">LOCATION</MenuItem>
-                <MenuItem value="FACULTY OF AGRICULTURE AND FORESTRY">
-                  FACULTY OF AGRICULTURE AND FORESTRY
+                <MenuItem disabled value="placeholder">
+                  LOCATION
                 </MenuItem>
-                <MenuItem value="FACULTY OF ARTS">FACULTY OF ARTS</MenuItem>
-                <MenuItem value="COLLEGE OF MEDICINE">
-                  COLLEGE OF MEDICINE
+                <MenuItem value="The zoological garden">
+                  The zoological garden
                 </MenuItem>
-                <MenuItem value="FACULTY OF EDUCATION">
-                  FACULTY OF EDUCATION
+                <MenuItem value="The Botanical Garden">
+                  The Botanical Garden
                 </MenuItem>
-                <MenuItem value="FACULTY OF PHARMACY">
-                  FACULTY OF PHARMACY
+                <MenuItem value="Love Garden">Love Garden</MenuItem>
+                <MenuItem value="Heritage Park">Heritage Park</MenuItem>
+                <MenuItem value="Awba Dam">Awba Dam</MenuItem>
+                <MenuItem value="Wole Soyinka theatre">
+                  Wole Soyinka theatre
                 </MenuItem>
-                <MenuItem value="FACULTY OF SCIENCE">
-                  FACULTY OF SCIENCE
-                </MenuItem>
-                <MenuItem value="FACULTY OF THE SOCIAL SCIENCES">
-                  FACULTY OF THE SOCIAL SCIENCES
-                </MenuItem>
-                <MenuItem value="FACULTY OF TECHNOLOGY">
-                  FACULTY OF TECHNOLOGY
-                </MenuItem>
-                <MenuItem value="FACULTY OF VETERINARY MEDICINE">
-                  FACULTY OF VETERINARY MEDICINE
-                </MenuItem>
-                <MenuItem value="AFRICA REGIONAL CENTRE FOR INFORMATION SCIENCE">
-                  AFRICA REGIONAL CENTRE FOR INFORMATION SCIENCE
+                <MenuItem value="UI chapel/Central mosque">
+                  UI chapel/Central mosque
                 </MenuItem>
               </Select>
             </Grid>
@@ -196,7 +181,7 @@ const FilterScheduler = ({ openSchedulerFilter, handleClose }) => {
                 sx={{ height: "55px" }}
                 fullWidth
               >
-                FACULTY
+                LECTURE THEATRE
               </Button>
             </Grid>
             <Grid item xs={12} sm={9}>
@@ -204,48 +189,32 @@ const FilterScheduler = ({ openSchedulerFilter, handleClose }) => {
                 defaultValue="placeholder"
                 fullWidth
                 sx={{ height: "55px" }}
-                name="department"
-                {...register("department")}
+                name="lectureTheatre"
+                {...register("lectureTheatre")}
               >
-                <MenuItem value="placeholder">FACULTY</MenuItem>
-                <MenuItem value="DEPARTMENT OF ANIMAL SCIENCE">
-                  DEPARTMENT OF ANIMAL SCIENCE
+                <MenuItem disabled value="placeholder">
+                  LECTURE THEATRE
                 </MenuItem>
-                <MenuItem value="DEPARTMENT OF AGRICULTURAL ECONOMICS">
-                  DEPARTMENT OF AGRICULTURAL ECONOMICS
+                <MenuItem value="Faculty of Science Lecture Theatre">
+                  Faculty of Science Lecture Theatre
                 </MenuItem>
-                <MenuItem value="DEPARTMENT OF AGRONOMY">
-                  DEPARTMENT OF AGRONOMY
+                <MenuItem value="CBN Lecture Theatre">
+                  CBN Lecture Theatre
                 </MenuItem>
-                <MenuItem value="DEPARTMENT OF FOREST RESOURCES MANAGEMENT">
-                  DEPARTMENT OF FOREST RESOURCES MANAGEMENT
+                <MenuItem value="Department of Chemistry Lecture Theatre">
+                  Department of Chemistry Lecture Theatre
                 </MenuItem>
-                <MenuItem value="DEPARTMENT OF MUSIC">
-                  DEPARTMENT OF MUSIC
+                <MenuItem value="Faculty of Art Lecture Theatre">
+                  Faculty of Art Lecture Theatre
                 </MenuItem>
-                <MenuItem value="DEPARTMENT OF RELIGIOUS STUDIES">
-                  DEPARTMENT OF RELIGIOUS STUDIES
+                <MenuItem value="Faculty of Law Lecture Theatre">
+                  Faculty of Law Lecture Theatre
                 </MenuItem>
-                <MenuItem value="DEPARTMENT OF ARABIC AND ISLAMIC STUDIES">
-                  DEPARTMENT OF ARABIC AND ISLAMIC STUDIES
+                <MenuItem value="College of Medicine Lecture Theatre">
+                  College of Medicine Lecture Theatre
                 </MenuItem>
-                <MenuItem value="DEPARTMENT OF COMMUNICATION AND LANGUAGE ARTS">
-                  DEPARTMENT OF COMMUNICATION AND LANGUAGE ARTS
-                </MenuItem>
-                <MenuItem value="DEPARTMENT OF EUROPEAN STUDIES">
-                  DEPARTMENT OF EUROPEAN STUDIES
-                </MenuItem>
-                <MenuItem value="DEPARTMENT OF HISTORY">
-                  DEPARTMENT OF HISTORY
-                </MenuItem>
-                <MenuItem value="DEPARTMENT OF THEATRE ARTS">
-                  DEPARTMENT OF THEATRE ARTS
-                </MenuItem>
-                <MenuItem value="DEPARTMENT OF PHILOSOPHY">
-                  DEPARTMENT OF PHILOSOPHY
-                </MenuItem>
-                <MenuItem value="DEPARTMENT OF HUMAN NUTRITION">
-                  DEPARTMENT OF HUMAN NUTRITION
+                <MenuItem value="Faculty of Agriculture Lecture Theatre">
+                  Faculty of Agriculture Lecture Theatre
                 </MenuItem>
               </Select>
             </Grid>

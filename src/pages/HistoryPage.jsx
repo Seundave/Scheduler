@@ -24,20 +24,25 @@ import {
 } from "@mui/material";
 // components
 import Label from "../components/label";
+import { useDispatch, useSelector } from "react-redux";
 import Iconify from "../components/iconify";
 import Scrollbar from "../components/scrollbar";
 // sections
-import { UserListHead, UserListToolbar } from "../sections/@dashboard/user";
+import {
+  HistoryListHead,
+  HistoryListToolbar,
+} from "../sections/@dashboard/history";
 // mock
 import USERLIST from "../_mock/user";
 import axios from "axios";
+import { getSchedulerStart, getSchedulerSuccess } from "../redux/get-schedulers/getScheduler";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: "name", label: "Name", alignRight: false },
-  { id: "faculty", label: "Faculty", alignRight: false },
-  { id: "department", label: "Department", alignRight: false },
+  // { id: "name", label: "Name", alignRight: false },
+  { id: "lecture theatre", label: "Lecture Theatre", alignRight: false },
+  { id: "capacity", label: "Capacity", alignRight: false },
   { id: "Date created", label: "Date created", alignRight: false },
   { id: "Date updated", label: "Date updated", alignRight: false },
   { id: "status", label: "Status", alignRight: false },
@@ -81,7 +86,11 @@ function applySortFilter(array, comparator, query) {
 export default function HistoryPage() {
   const [schedulers, setSchedulers] = useState([]);
 
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch()
+
+  const {loading, error} = useSelector((state)=>state.getSchedulers)
+
+  const [isloading, setIsLoading] = useState(true);
 
   const [open, setOpen] = useState(null);
 
@@ -108,16 +117,18 @@ export default function HistoryPage() {
   useEffect(() => {
     const fetchSchedulers = async () => {
       try {
+        dispatch(getSchedulerStart())
         const response = await axios.get(
           "http://localhost:3000/scheduler/get-schedulers"
         );
         console.log(response);
         const fetchedSchedulers = response.data;
+        dispatch(getSchedulerSuccess(response.data))
         setSchedulers(fetchedSchedulers);
-        setLoading(false);
+        setIsLoading(false);
       } catch (error) {
         console.log("Error fetching admins", error);
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -174,15 +185,15 @@ export default function HistoryPage() {
   };
 
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - schedulers.length) : 0;
 
-  const filteredUsers = applySortFilter(
-    USERLIST,
+  const filteredSchedulers = applySortFilter(
+    schedulers,
     getComparator(order, orderBy),
     filterName
   );
 
-  const isNotFound = !filteredUsers.length && !!filterName;
+  const isNotFound = !filteredSchedulers.length && !!filterName;
 
   return (
     <>
@@ -203,7 +214,7 @@ export default function HistoryPage() {
         </Stack>
 
         <Card>
-          <UserListToolbar
+          <HistoryListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -212,25 +223,29 @@ export default function HistoryPage() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <UserListHead
+                <HistoryListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
+                  rowCount={schedulers.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers
+                  {filteredSchedulers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
                       const {
-                        id,
+                        _id,
                         name,
                         department,
+                        lectureTheatre,
+                        capacity,
                         datecreated,
                         dateUpdated,
+                        createdAt,
+                        updatedAt,
                         status,
                         faculty,
                         avatarUrl,
@@ -241,7 +256,7 @@ export default function HistoryPage() {
                       return (
                         <TableRow
                           hover
-                          key={id}
+                          key={_id}
                           tabIndex={-1}
                           role="checkbox"
                           selected={selectedUser}
@@ -261,18 +276,18 @@ export default function HistoryPage() {
                             >
                               {/* <Avatar alt={name} src={avatarUrl} /> */}
                               <Typography variant="subtitle2" noWrap>
-                                {name}
+                                {lectureTheatre}
                               </Typography>
                             </Stack>
                           </TableCell>
 
-                          <TableCell align="left">{faculty}</TableCell>
+                          <TableCell align="left">{capacity}</TableCell>
 
-                          <TableCell align="left">{department}</TableCell>
+                          <TableCell align="left">{createdAt}</TableCell>
 
-                          <TableCell align="left">{email}</TableCell>
+                          <TableCell align="left">{updatedAt}</TableCell>
 
-                          <TableCell align="left">{email}</TableCell>
+                          {/* <TableCell align="left">{updatedAt}</TableCell> */}
 
                           {/* <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell> */}
 
@@ -332,7 +347,7 @@ export default function HistoryPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={USERLIST.length}
+            count={schedulers.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

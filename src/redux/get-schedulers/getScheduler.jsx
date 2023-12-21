@@ -26,7 +26,7 @@ const getSchedulerSlice = createSlice({
       state.loading = true;
     },
     getFilteredSchedulerSuccess: (state, action) => {
-      state.allAdmins = action.payload;
+      state.allSchedulers = action.payload;
       state.loading = false;
       state.error = null;
     },
@@ -35,14 +35,14 @@ const getSchedulerSlice = createSlice({
       state.loading = false;
     },
 
-    updateAdminList: (state, action) => {
-      const updatedAdmin = action.payload;
+    updateSchedulerList: (state, action) => {
+      const updatedScheduler = action.payload;
 
-      let findDocIndex = state.allAdmins.findIndex(
-        (el) => el._id === updatedAdmin._id
+      let findDocIndex = state.allSchedulers.findIndex(
+        (el) => el._id === updatedScheduler._id
       );
 
-      state.allAdmins[findDocIndex] = updatedAdmin;
+      state.allSchedulers[findDocIndex] = updatedScheduler;
     },
   },
 });
@@ -54,7 +54,7 @@ export const {
   getFilteredSchedulerStart,
   getFilteredSchedulerSuccess,
   getFilteredSchedulerFailure,
-  updateAdminList,
+  updateSchedulerList,
 } = getSchedulerSlice.actions;
 
 export default getSchedulerSlice.reducer;

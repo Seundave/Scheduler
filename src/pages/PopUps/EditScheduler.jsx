@@ -61,11 +61,16 @@ function getStyles(name, facility, theme) {
   };
 }
 
-const EditScheduler = ({ openEditScheduler, handleClose }) => {
+const EditScheduler = ({ openEditScheduler, handleClose, selectedScheduler }) => {
   const [facility, setFacility] = React.useState([]);
   const [image, setImage] = useState();
   const inputRef = useRef(null);
   const theme = useTheme();
+
+  console.log(selectedScheduler);
+
+  const selectedSchedulerId = selectedScheduler?._id;
+  console.log(selectedSchedulerId)
 
   const methods = useForm({
     defaultValues: {

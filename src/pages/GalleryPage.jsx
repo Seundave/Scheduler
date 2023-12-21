@@ -30,6 +30,7 @@ import {
   IconButton,
   TableContainer,
   TablePagination,
+  CircularProgress,
 } from "@mui/material";
 // components
 import Label from "../components/label";
@@ -39,9 +40,14 @@ import Scrollbar from "../components/scrollbar";
 import { GalleryListToolbar } from "../sections/@dashboard/gallery";
 // mock
 import USERLIST from "../_mock/user";
-import { dummyData } from "../theme/CardSlider";
 import EditScheduler from "./PopUps/EditScheduler";
 import DeleteScheduler from "./PopUps/DeleteScheduler";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getSchedulerFailure,
+  getSchedulerStart,
+  getSchedulerSuccess,
+} from "../redux/get-schedulers/getScheduler";
 
 // ----------------------------------------------------------------------
 
@@ -91,7 +97,13 @@ function applySortFilter(array, comparator, query) {
 const ITEM_HEIGHT = 48;
 
 export default function GalleryPage() {
-  const [schedulerData, setSchedulerData] = useState([]);
+  const [schedulers, setSchedulers] = useState([]);
+
+  const [selectedScheduler, setSelectedScheduler] = useState(null)
+
+  const dispatch = useDispatch()
+
+  const { loading, error } = useSelector((state) => state.getSchedulers);
 
   const [imageUploadError, setImageUploadError] = useState(false);
 
@@ -117,8 +129,8 @@ export default function GalleryPage() {
 
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleMouseEnter = (id) => {
-    setIsHovered(id);
+  const handleMouseEnter = (_id) => {
+    setIsHovered(_id);
   };
 
   const onSubmit = async (data) => {
@@ -138,20 +150,25 @@ export default function GalleryPage() {
   };
 
   useEffect(() => {
-    const fetchAdmins = async () => {
+    const fetchSchedulers = async () => {
       try {
+        dispatch(getSchedulerStart());
         const response = await axios.get(
           "http://localhost:3000/scheduler/get-schedulers"
         );
         console.log(response);
         const fetchedSchedulers = response.data;
-        setSchedulerData(fetchedSchedulers);
+        dispatch(getSchedulerSuccess(response.data));
+        setSchedulers(fetchedSchedulers);
+        // setLoading(false);
       } catch (error) {
+        dispatch(getSchedulerFailure(error.message));
         console.log("Error fetching admins", error);
+        // setLoading(false);
       }
     };
 
-    fetchAdmins();
+    fetchSchedulers();
   }, []);
 
   const handleEditNotification = () => {
@@ -174,7 +191,8 @@ export default function GalleryPage() {
     setAnchorEl(null);
   };
 
-  const handleOptionClick = (event) => {
+  const handleOptionClick = (event, user) => {
+    setSelectedScheduler(user)
     setAnchorEl(event.currentTarget);
   };
 
@@ -234,8 +252,6 @@ export default function GalleryPage() {
     filterName
   );
 
-  console.log(schedulerData);
-
   const isNotFound = !filteredUsers.length && !!filterName;
 
   return (
@@ -264,11 +280,11 @@ export default function GalleryPage() {
           />
 
           <Container sx={{ position: "relative" }}>
-            <Grid container spacing={2}>
-              {dummyData.map((data) => (
-                <Grid key={data.id} item xs={12} sm={4}>
+            {loading ? <Stack alignItems={"center"}><CircularProgress/></Stack> : <Grid container spacing={2}>
+              {schedulers.map((data) => (
+                <Grid key={data._id} item xs={12} sm={4}>
                   <Card
-                    onMouseEnter={() => handleMouseEnter(data.id)}
+                    onMouseEnter={() => handleMouseEnter(data._id)}
                     onMouseLeave={handleMouseLeave}
                     elevation={3}
                     sx={{ position: "relative" }}
@@ -277,11 +293,11 @@ export default function GalleryPage() {
                       component="img"
                       height="400"
                       alt={data.title}
-                      src={data.imageUrl}
+                      src={data.imageUrl[0]}
                       style={{ position: "relative" }}
                     />
 
-                    {isHovered && isHovered === data.id && (
+                    {isHovered && isHovered === data._id && (
                       <div
                         style={{
                           position: "absolute",
@@ -358,12 +374,13 @@ export default function GalleryPage() {
                   </Card>
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
-                      {data.title}
+                      {data.lectureTheatre}
                     </Typography>
                   </CardContent>
                 </Grid>
               ))}
-            </Grid>
+            </Grid> }
+            
           </Container>
 
           {openEditScheduler && (
@@ -371,6 +388,7 @@ export default function GalleryPage() {
               openEditScheduler={openEditScheduler}
               handleClose={() => setOpenEditScheduler(false)}
               onSubmit={onSubmit}
+              selectedScheduler={selectedScheduler}
               imageUploadError={imageUploadError}
               // handleDeleteClick={handleDeleteClick}
               // id={activeNotification._id}
@@ -382,6 +400,7 @@ export default function GalleryPage() {
               openEditScheduler={openDeleteScheduler}
               handleClose={() => setOpenDeleteScheduler(false)}
               onSubmit={onSubmit}
+              selectedScheduler={selectedScheduler}
               // handleDeleteClick={handleDeleteClick}
               // id={activeNotification._id}
             />

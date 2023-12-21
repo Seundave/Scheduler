@@ -53,7 +53,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const CardSlider = () => {
   const [schedulers, setSchedulers] = useState([]);
   const classes = useStyles();
@@ -62,7 +61,7 @@ const CardSlider = () => {
   const { loading, error } = useSelector((state) => state.getSchedulers);
 
   useEffect(() => {
-    const fetchAdmins = async () => {
+    const fetchSchedulers = async () => {
       try {
         dispatch(getSchedulerStart());
         const response = await axios.get(
@@ -80,7 +79,7 @@ const CardSlider = () => {
       }
     };
 
-    fetchAdmins();
+    fetchSchedulers();
   }, []);
 
   const settings = {
@@ -126,7 +125,7 @@ const CardSlider = () => {
               <CardMedia
                 className={classes.media}
                 component="img"
-                image={item.imageUrl}
+                image={item.imageUrl[0]}
                 alt={item.lectureTheatre}
               />
               {hoveredId && (
@@ -144,7 +143,9 @@ const CardSlider = () => {
                         alignItems: "center",
                       }}
                     >
-                      <Typography variant="h4">{item.lectureTheatre}</Typography>
+                      <Typography variant="h4">
+                        {item.lectureTheatre}
+                      </Typography>
                       <Typography variant="body1">
                         {item.description}
                       </Typography>

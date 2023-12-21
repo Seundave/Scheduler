@@ -86,7 +86,7 @@ export default function LoginForm() {
         <Stack spacing={3}>
           <TextField
             name="email"
-            label="Email address"
+            label="Email Address / PF Number"
             {...register("email")}
           />
           <Typography sx={{ color: "red" }}>{errors.email?.message}</Typography>
