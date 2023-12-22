@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { filter } from "lodash";
 import { sentenceCase } from "change-case";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Edit, Delete } from "@mui/icons-material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 // @mui
@@ -29,6 +29,7 @@ import {
   IconButton,
   TableContainer,
   TablePagination,
+  CircularProgress,
 } from "@mui/material";
 // components
 import Label from "../components/label";
@@ -38,11 +39,16 @@ import Scrollbar from "../components/scrollbar";
 import { GalleryListToolbar } from "../sections/@dashboard/gallery";
 // mock
 import USERLIST from "../_mock/user";
-import { dummyData } from "../theme/CardSlider";
 import EditScheduler from "./PopUps/EditScheduler";
 import DeleteScheduler from "./PopUps/DeleteScheduler";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios"
+import {
+  getSchedulerFailure,
+  getSchedulerStart,
+  getSchedulerSuccess,
+} from "../redux/getSchedulers/getSchedulers";
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -93,6 +99,12 @@ const ITEM_HEIGHT = 48;
 export default function GalleryPage() {
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
+  const { loading, error, allSchedulers } = useSelector(
+    (state) => state.getSchedulers
+  );
+
   const [anchorEl, setAnchorEl] = useState(null);
 
   const [openEditScheduler, setOpenEditScheduler] = useState(false);
@@ -115,9 +127,31 @@ export default function GalleryPage() {
 
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleMouseEnter = (id) => {
-    setIsHovered(id);
+  const handleMouseEnter = (_id) => {
+    setIsHovered(_id);
   };
+
+  useEffect(() => {
+    const fetchSchedulers = async () => {
+      try {
+        dispatch(getSchedulerStart());
+        const response = await axios.get(
+          "http://localhost:3000/scheduler/get-schedulers"
+        );
+        console.log(response);
+        // const fetchedSchedulers = response.data;
+        dispatch(getSchedulerSuccess(response.data));
+        // setSchedulers(fetchedSchedulers);
+        // setLoading(false);
+      } catch (error) {
+        dispatch(getSchedulerFailure(error.message));
+        console.log("Error fetching admins", error);
+        // setLoading(false);
+      }
+    };
+
+    fetchSchedulers();
+  }, []);
 
   const onSubmit = async (data) => {
     try {
@@ -147,8 +181,8 @@ export default function GalleryPage() {
     setIsHovered(null);
   };
 
-  const handleOpenScheduler = (id) => {
-    navigate("/dashboard/scheduler/" + id);
+  const handleOpenScheduler = (_id) => {
+    navigate("/dashboard/scheduler/" + _id);
   };
 
   const handleOpenMenu = (event) => {
@@ -247,52 +281,57 @@ export default function GalleryPage() {
           />
 
           <Container sx={{ position: "relative" }}>
-            <Grid container spacing={2}>
-              {dummyData.map((data) => (
-                <Grid key={data.id} item xs={12} sm={4}>
-                  <Card
-                    onMouseEnter={() => handleMouseEnter(data.id)}
-                    onMouseLeave={handleMouseLeave}
-                    elevation={3}
-                    onClick={() => handleOpenScheduler(data.id)}
-                    sx={{ position: "relative", cursor: "pointer" }}
-                  >
-                    <CardMedia
-                      component="img"
-                      height="400"
-                      alt={data.title}
-                      src={data.imageUrl}
-                      style={{ position: "relative" }}
-                    />
+            {loading ? (
+              <Stack alignItems={"center"}>
+                <CircularProgress />
+              </Stack>
+            ) : (
+              <Grid container spacing={2}>
+                {allSchedulers.map((data) => (
+                  <Grid key={data._id} item xs={12} sm={4}>
+                    <Card
+                      onMouseEnter={() => handleMouseEnter(data._id)}
+                      onMouseLeave={handleMouseLeave}
+                      elevation={3}
+                      onClick={() => handleOpenScheduler(data._id)}
+                      sx={{ position: "relative", cursor: "pointer" }}
+                    >
+                      <CardMedia
+                        component="img"
+                        height="400"
+                        alt={data.title}
+                        src={data.imageUrl[0]}
+                        style={{ position: "relative" }}
+                      />
 
-                    {isHovered && isHovered === data.id && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
-                          width: "100%",
-                          height: "100%",
-                          background: "rgba(0, 0, 0, 0.6)",
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Typography variant="h6" color="white" gutterBottom>
-                          {data.title}
-                        </Typography>
-                        <Typography
-                          variant="body1"
-                          color="white"
-                          sx={{ paddingX: "20px" }}
+                      {isHovered && isHovered === data._id && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            height: "100%",
+                            background: "rgba(0, 0, 0, 0.6)",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
                         >
-                          {data.description}
-                        </Typography>
-                      </div>
-                    )}
-                    {/* <Box>
+                          {/* <Typography variant="h6" color="white" gutterBottom>
+                            {data.title}
+                          </Typography> */}
+                          <Typography
+                            variant="body1"
+                            color="white"
+                            sx={{ paddingX: "20px" }}
+                          >
+                            {data.description}
+                          </Typography>
+                        </div>
+                      )}
+                      {/* <Box>
                       <IconButton
                         aria-label="more"
                         id="long-button"
@@ -336,15 +375,16 @@ export default function GalleryPage() {
                         </MenuItem>
                       </Menu>
                     </Box> */}
-                  </Card>
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      {data.title}
-                    </Typography>
-                  </CardContent>
-                </Grid>
-              ))}
-            </Grid>
+                    </Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        {data.lectureTheatre}
+                      </Typography>
+                    </CardContent>
+                  </Grid>
+                ))}
+              </Grid>
+            )}
           </Container>
 
           {openEditScheduler && (

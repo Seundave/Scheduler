@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -9,6 +9,13 @@ import { Card, CardMedia, Typography } from "@material-ui/core";
 import image1 from "../assets/pexels-david-yu-1624990-min.jpg";
 import image2 from "../assets/pexels-sevenstorm-juhaszimrus-555460-min.jpg";
 import image3 from "../assets/pexels-fuzail-ahmad-2792601-min.jpg";
+import {
+  getSchedulerFailure,
+  getSchedulerStart,
+  getSchedulerSuccess,
+} from "../redux/getSchedulers/getSchedulers";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,54 +54,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const dummyData = [
-  {
-    id: 1,
-    imageUrl: image1,
-    title: "Image 1",
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. type specimen book. It has survived not only five centuries, but also thpesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset",
-  },
-  {
-    id: 2,
-    imageUrl: image2,
-    title: "Image 2",
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. type specimen book. It has survived not only five centuries, but also thpesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset",
-  },
-  {
-    id: 3,
-    imageUrl: image3,
-    title: "Image 3",
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. type specimen book. It has survived not only five centuries, but also thpesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset",
-  },
-  {
-    id: 4,
-    imageUrl: image1,
-    title: "Image 4",
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. type specimen book. It has survived not only five centuries, but also thpesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset",
-  },
-  {
-    id: 5,
-    imageUrl: image2,
-    title: "Image 5",
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. type specimen book. It has survived not only five centuries, but also thpesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset",
-  },
-  {
-    id: 6,
-    imageUrl: image3,
-    title: "Image 6",
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. type specimen book. It has survived not only five centuries, but also thpesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset",
-  },
-];
 
 const CardSlider = () => {
+  const [schedulers, setSchedulers] = useState([]);
+  const dispatch = useDispatch();
   const classes = useStyles();
   const [hoveredId, setHoveredId] = useState(null);
   const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.getSchedulers);
+  
 
-  const handleOpenScheduler = (id) => {
-    navigate("/dashboard/scheduler/" + id);
+  useEffect(() => {
+    const fetchSchedulers = async () => {
+      try {
+        dispatch(getSchedulerStart());
+        const response = await axios.get(
+          "http://localhost:3000/scheduler/get-schedulers"
+        );
+        console.log(response);
+        const fetchedSchedulers = response.data;
+        dispatch(getSchedulerSuccess(response.data));
+        setSchedulers(fetchedSchedulers);
+        // setLoading(false);
+      } catch (error) {
+        dispatch(getSchedulerFailure(error.message));
+        console.log("Error fetching admins", error);
+        // setLoading(false);
+      }
+    };
+
+    fetchSchedulers();
+  }, []);
+
+  const handleOpenScheduler = (_id) => {
+    navigate("/dashboard/scheduler/" + _id);
   };
 
   const settings = {
@@ -117,8 +110,8 @@ const CardSlider = () => {
 
   console.log(hoveredId);
 
-  const handleMouseEnter = (id) => {
-    setHoveredId(id);
+  const handleMouseEnter = (_id) => {
+    setHoveredId(_id);
   };
 
   const handleMouseLeave = () => {
@@ -127,14 +120,14 @@ const CardSlider = () => {
   return (
     <div>
       <Slider {...settings}>
-        {dummyData.map((item) => (
+        {schedulers.map((item) => (
           <div
-            key={item.id}
+            key={item._id}
             // style={{ height: "200px" }}
           >
             <Card
               className={classes.root}
-              onMouseEnter={() => handleMouseEnter(item.id)}
+              onMouseEnter={() => handleMouseEnter(item._id)}
               onMouseLeave={handleMouseLeave}
             >
               <CardMedia
@@ -146,10 +139,10 @@ const CardSlider = () => {
               {hoveredId && (
                 <div
                   className={`${classes.overlay} ${
-                    hoveredId === item.id ? classes.overlayVisible : ""
+                    hoveredId === item._id ? classes.overlayVisible : ""
                   }`}
                 >
-                  {hoveredId === item.id && (
+                  {hoveredId === item._id && (
                     <Box
                       sx={{
                         width: { sm: "600px", xs: "300px" },
@@ -158,7 +151,7 @@ const CardSlider = () => {
                         alignItems: "center",
                       }}
                     >
-                      <Typography variant="h3">{item.title}</Typography>
+                      <Typography variant="h4">{item.lectureTheatre}</Typography>
                       <Typography variant="body1">
                         {item.description}
                       </Typography>
@@ -168,7 +161,7 @@ const CardSlider = () => {
                           width: "150px",
                           marginTop: "15px",
                         }}
-                        onClick={() => handleOpenScheduler(item.id)}
+                        onClick={() => handleOpenScheduler(item._id)}
                       >
                         View more
                       </Button>
@@ -186,4 +179,3 @@ const CardSlider = () => {
 
 export default CardSlider;
 
-export { dummyData };

@@ -17,8 +17,11 @@ import {
 import CardSlider from "../theme/CardSlider";
 import { CloudArrowUp } from "@phosphor-icons/react";
 import UniversityLogo from "../assets/university.png";
+import Statistics from "../theme/Statistics";
+import { useSelector } from "react-redux";
 
 const DashboardAppPage = () => {
+  const { currentUser } = useSelector((state) => state.user);
   const [image, setImage] = useState();
   const inputRef = useRef(null);
 
@@ -45,11 +48,15 @@ const DashboardAppPage = () => {
       <Helmet>
         <title> Home </title>
       </Helmet>
-
+      {currentUser && (
+        <Typography variant="h4"> Hello, {currentUser.name}</Typography>
+      )}
       <CardSlider />
 
+      <Statistics />
+
       {/* Start of staff details */}
-      <Paper
+      {/* <Paper
         elevation={4}
         sx={{
           backgroundColor: "white",
@@ -178,7 +185,7 @@ const DashboardAppPage = () => {
             Create Scheduler
           </Button>
         </form>
-      </Paper>
+      </Paper> */}
     </div>
   );
 };

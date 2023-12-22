@@ -1,12 +1,18 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Helmet } from "react-helmet-async";
-import { dummyData } from "../theme/CardSlider";
+// import { dummyData } from "../theme/CardSlider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { formSchema } from "../validation/UserRequestValidation";
+import { useDispatch, useSelector } from "react-redux";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
+import {
+  getSchedulerFailure,
+  getSchedulerStart,
+  getSchedulerSuccess,
+} from "../redux/getSchedulers/getSchedulers";
 import dayjs from "dayjs";
 import {
   Button,
@@ -28,8 +34,34 @@ import { useParams } from "react-router-dom";
 
 const ScheduleDescriptionPage = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
+  const { loading, error, allSchedulers } = useSelector(
+    (state) => state.getSchedulers
+  );
 
-  const selectedItem = dummyData.find((el) => el.id == id);
+  useEffect(() => {
+    const fetchSchedulers = async () => {
+      try {
+        dispatch(getSchedulerStart());
+        const response = await axios.get(
+          "http://localhost:3000/scheduler/get-schedulers"
+        );
+        console.log(response);
+        const fetchedSchedulers = response.data;
+        dispatch(getSchedulerSuccess(response.data));
+        setSchedulers(fetchedSchedulers);
+        // setLoading(false);
+      } catch (error) {
+        dispatch(getSchedulerFailure(error.message));
+        console.log("Error fetching admins", error);
+        // setLoading(false);
+      }
+    };
+
+    fetchSchedulers();
+  }, []);
+
+  const selectedItem = allSchedulers.find((el) => el?._id == id);
 
   const methods = useForm({
     defaultValues: {
@@ -60,11 +92,11 @@ const ScheduleDescriptionPage = () => {
   return (
     <>
       <Helmet>
-        <title> Scheduler Description page </title>
+        <title> Lecture Theatre Description page </title>
       </Helmet>
 
       <Container>
-        <Typography variant="h3">Scheduler Description Page </Typography>
+        <Typography variant="h3">Lecture Theatre Description Page </Typography>
 
         <Stack>
           <CardMedia
@@ -76,7 +108,7 @@ const ScheduleDescriptionPage = () => {
             sx={{ marginTop: "40px" }}
           />
           <Typography variant="h4" sx={{ marginTop: "30px" }}>
-            {selectedItem.title}
+            {selectedItem.lectureTheatre}
           </Typography>
           <Typography sx={{ marginTop: "20px" }}>
             {selectedItem.description}
