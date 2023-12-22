@@ -217,7 +217,8 @@ const EditAdminDetails = ({
         </Stack>
         <Button
           variant="contained"
-          color="primary"
+          disabled={loading}
+          // color="primary"
           type="submit"
           sx={{
             marginTop: "20px",

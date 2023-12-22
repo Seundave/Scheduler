@@ -248,7 +248,7 @@ const CreateAdmin = ({ openAdminPopup, handleClose }) => {
         </Stack>
         <Button
           variant="contained"
-          color="primary"
+          // color="primary"
           type="submit"
           sx={{ marginTop: "20px", marginBottom: "40px", height: "45px" }}
           fullWidth
