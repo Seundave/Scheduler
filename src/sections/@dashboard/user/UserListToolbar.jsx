@@ -19,6 +19,7 @@ import {
 // component
 import Iconify from "../../../components/iconify";
 import { useState } from "react";
+import FilterHistory from "../../../pages/PopUps/FilterHistory";
 
 // ----------------------------------------------------------------------
 
@@ -59,6 +60,7 @@ export default function UserListToolbar({
   onFilterName,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [openFilterPopup, setOpenFilterPopup] = useState(false);
   const open = Boolean(anchorEl);
 
   const handleShowFilter = (event) => {
@@ -66,60 +68,81 @@ export default function UserListToolbar({
     setAnchorEl(event.currentTarget);
   };
 
+  const handleFilterPopup = () => {
+    console.log(openFilterPopup);
+    setOpenFilterPopup((prev) => !prev);
+  };
+
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
 
+  const onSubmit = async (data) => {
+    try {
+      console.log("Submitted successfully");
+      // submit data to backend
+      // console.log(data);
+      // dispatch(sendMessage(data));
+    } catch (error) {
+      console.log(error);
+      // reset();
+      // setError("afterSubmit", {
+      //   ...error,
+      //   message: error.message,
+      // });
+    }
+  };
+
   return (
-    <StyledRoot
-      sx={{
-        ...(numSelected > 0 && {
-          color: "primary.main",
-          bgcolor: "primary.lighter",
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography component="div" variant="subtitle1">
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <StyledSearch
-          value={filterName}
-          onChange={onFilterName}
-          placeholder="Search user..."
-          startAdornment={
-            <InputAdornment position="start">
-              <Iconify
-                icon="eva:search-fill"
-                sx={{ color: "text.disabled", width: 20, height: 20 }}
-              />
-            </InputAdornment>
-          }
-        />
-      )}
+    <>
+      <StyledRoot
+        sx={{
+          ...(numSelected > 0 && {
+            color: "primary.main",
+            bgcolor: "primary.lighter",
+          }),
+        }}
+      >
+        {numSelected > 0 ? (
+          <Typography component="div" variant="subtitle1">
+            {numSelected} selected
+          </Typography>
+        ) : (
+          <StyledSearch
+            value={filterName}
+            onChange={onFilterName}
+            placeholder="Search user..."
+            startAdornment={
+              <InputAdornment position="start">
+                <Iconify
+                  icon="eva:search-fill"
+                  sx={{ color: "text.disabled", width: 20, height: 20 }}
+                />
+              </InputAdornment>
+            }
+          />
+        )}
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <Iconify icon="eva:trash-2-fill" />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <>
-        <Tooltip title="Filter list">
-          <IconButton
-            aria-controls={open ? "basic-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            onClick={handleShowFilter}
-          >
-            <Iconify icon="ic:round-filter-list" />
-          </IconButton>
-        </Tooltip>
+        {numSelected > 0 ? (
+          <Tooltip title="Delete">
+            <IconButton>
+              <Iconify icon="eva:trash-2-fill" />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <>
+            <Tooltip title="Filter list">
+              <IconButton
+                aria-controls={open ? "basic-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={handleFilterPopup}
+              >
+                <Iconify icon="ic:round-filter-list" />
+              </IconButton>
+            </Tooltip>
 
-      
-        <Menu
+            {/* <Menu
           id="basic-menu"
           anchorEl={anchorEl}
           open={open}
@@ -146,14 +169,20 @@ export default function UserListToolbar({
               label="Facilities"
             />
           </FormGroup>
-        </Menu>
+        </Menu> */}
+          </>
+        )}
+      </StyledRoot>
 
-
-        </>
-        
+      {openFilterPopup && (
+        <FilterHistory
+          openFilterPopup={openFilterPopup}
+          handleClose={() => setOpenFilterPopup(false)}
+          onSubmit={onSubmit}
+          // handleDeleteClick={handleDeleteClick}
+          // id={activeNotification._id}
+        />
       )}
-
-     
-    </StyledRoot>
+    </>
   );
 }

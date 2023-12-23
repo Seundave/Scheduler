@@ -6,8 +6,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 export const formSchema = yup.object().shape({
     purpose: yup.string().required("Purpose is required"),
-    time: yup.string().required("Time is required"),
-    date: yup.date().typeError("Date of birth is required"),
+    time: yup.array().required("Time is required"),
+    date: yup.date().typeError("A schedule date is required"),
+
   });
 
   
