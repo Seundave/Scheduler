@@ -48,9 +48,9 @@ const DashboardAppPage = () => {
       <Helmet>
         <title> Home </title>
       </Helmet>
-      {currentUser && (
+      {/* {currentUser && (
         <Typography variant="h4"> Hello, {currentUser.name}</Typography>
-      )}
+      )} */}
       <CardSlider />
 
       <Statistics />
