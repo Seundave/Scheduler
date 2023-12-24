@@ -3,6 +3,7 @@ import schedulerUserReducer from "./schedulerUsers/userSlice";
 import getSchedulers from "./getSchedulers/getSchedulers";
 import bookScheduler from "./userSchedule/userScheduleSlice";
 import getUserListings from "./getUserListing/getUserListing";
+import getEditListings from "./editSchedulerListings/editSchedulerListings";
 
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   getSchedulers: getSchedulers,
   schedule: bookScheduler,
   userschedules: getUserListings,
+  editList: getEditListings
 });
 
 const persistConfig = {

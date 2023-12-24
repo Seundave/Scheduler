@@ -31,6 +31,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { UserListHead, UserListToolbar } from "../sections/@dashboard/user";
 // mock
 import USERLIST from "../_mock/user";
+import EditUserListings from "./PopUps/EditUserListings";
 
 // ----------------------------------------------------------------------
 
@@ -90,6 +91,10 @@ export default function HistoryPage() {
 
   const [selected, setSelected] = useState([]);
 
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const [openEditSchedulerListings, setOpenEditSchedulerListings] = useState(false);
+
   const [orderBy, setOrderBy] = useState("name");
 
   const [filterName, setFilterName] = useState("");
@@ -98,9 +103,11 @@ export default function HistoryPage() {
 
   console.log(userScheduleListing);
 
-  const handleOpenMenu = (event) => {
+  const handleOpenMenu = (event, user) => {
+    setSelectedUser(user);
     setOpen(event.currentTarget);
   };
+
 
   const handleCloseMenu = () => {
     setOpen(null);
@@ -141,6 +148,10 @@ export default function HistoryPage() {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+  };
+
+  const handleOpenSchedulerListings = () => {
+    setOpenEditSchedulerListings((prev) => !prev);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -340,7 +351,7 @@ export default function HistoryPage() {
           },
         }}
       >
-        <MenuItem>
+        <MenuItem onClick={handleOpenSchedulerListings}>
           <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
           Edit
         </MenuItem>
@@ -350,6 +361,17 @@ export default function HistoryPage() {
           Delete
         </MenuItem>
       </Popover>
+
+      {openEditSchedulerListings && (
+        <EditUserListings
+          openEditSchedulerListings={openEditSchedulerListings}
+          selectedUser={selectedUser}
+          handleClose={() => setOpenEditSchedulerListings(false)}
+          // onSubmit={onSubmit}
+          // handleDeleteClick={handleDeleteClick}
+          // id={activeNotification._id}
+        />
+      )}
     </>
   );
 }

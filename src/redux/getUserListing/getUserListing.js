@@ -22,10 +22,39 @@ const getUserLisitngSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+    getFilteredListingStart: (state) => {
+      state.isLoading = true;
+    },
+    getFilteredListingSuccess: (state, action) => {
+      state.allAdmins = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    },
+    getFilteredListingFailure: (state, action) => {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+
+    updateUserList: (state, action) => {
+      const updatedUserListing = action.payload;
+
+      let findDocIndex = state.userScheduleListing.findIndex(
+        (el) => el._id === updatedUserListing._id
+      );
+
+      state.userScheduleListing[findDocIndex] = updatedUserListing;
+    },
   },
 });
 
-export const { getUserListingStart, getUserListingSuccess, getUserListingFailure } =
-getUserLisitngSlice.actions;
+export const {
+  getUserListingStart,
+  getUserListingSuccess,
+  getUserListingFailure,
+  getFilteredListingStart,
+  getFilteredListingSuccess,
+  getFilteredListingFailure,
+  updatedUserListing,
+} = getUserLisitngSlice.actions;
 
 export default getUserLisitngSlice.reducer;
