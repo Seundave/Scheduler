@@ -111,7 +111,6 @@ const FilterAdmin = ({ openFilterPopup, handleClose }) => {
     } catch (error) {
       dispatch(getFilteredAdminFailure(error));
       toast.error(error.response.data.message)
-      console.log("Error fetching admins", error);
     }
   };
 

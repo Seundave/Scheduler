@@ -97,9 +97,9 @@ function applySortFilter(array, comparator, query) {
 const ITEM_HEIGHT = 48;
 
 export default function GalleryPage() {
-  const [schedulers, setSchedulers] = useState([]);
+const [schedulers, setSchedulers] = useState([])
 
-  const [selectedScheduler, setSelectedScheduler] = useState(null)
+  const [selectedSchedulers, setSelectedSchedulers] = useState(null);
 
   const dispatch = useDispatch()
 
@@ -183,7 +183,8 @@ export default function GalleryPage() {
     setIsHovered(null);
   };
 
-  const handleOpenMenu = (event) => {
+  const handleOpenMenu = (event, scheduler) => {
+    setSelectedSchedulers(scheduler);
     setOpen(event.currentTarget);
   };
 
@@ -191,8 +192,8 @@ export default function GalleryPage() {
     setAnchorEl(null);
   };
 
-  const handleOptionClick = (event, user) => {
-    setSelectedScheduler(user)
+  const handleOptionClick = (event, scheduler) => {
+    setSelectedSchedulers(scheduler)
     setAnchorEl(event.currentTarget);
   };
 
@@ -331,7 +332,7 @@ export default function GalleryPage() {
                         aria-controls={open ? "long-menu" : undefined}
                         aria-expanded={open ? "true" : undefined}
                         aria-haspopup="true"
-                        onClick={handleOptionClick}
+                        onClick={(event) => handleOptionClick(event)}
                         style={{
                           position: "absolute",
                           top: "20px",
@@ -388,7 +389,7 @@ export default function GalleryPage() {
               openEditScheduler={openEditScheduler}
               handleClose={() => setOpenEditScheduler(false)}
               onSubmit={onSubmit}
-              selectedScheduler={selectedScheduler}
+              selectedSchedulers={selectedSchedulers}
               imageUploadError={imageUploadError}
               // handleDeleteClick={handleDeleteClick}
               // id={activeNotification._id}
@@ -400,7 +401,7 @@ export default function GalleryPage() {
               openEditScheduler={openDeleteScheduler}
               handleClose={() => setOpenDeleteScheduler(false)}
               onSubmit={onSubmit}
-              selectedScheduler={selectedScheduler}
+              selectedSchedulers={selectedSchedulers}
               // handleDeleteClick={handleDeleteClick}
               // id={activeNotification._id}
             />

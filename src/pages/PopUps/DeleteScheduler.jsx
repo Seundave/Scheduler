@@ -11,8 +11,30 @@ import {
   Box,
   IconButton,
 } from "@mui/material";
+import { deleteScheduler } from "../../redux/get-schedulers/getScheduler";
 
-const DeleteScheduler = ({ openEditScheduler, handleClose }) => {
+const DeleteScheduler = ({ openEditScheduler, handleClose, selectedSchedulers }) => {
+  console.log(selectedSchedulers)
+  
+  const handleDeleteSchedulerClick = async () => {
+    setIsDeleteLoading(true);
+    try {
+      // dispatch(deleteAdminStart());
+      const response = await axios.delete(
+        `http://localhost:3000/admin/delete-admin/${selectedUserId}`
+      );
+      dispatch(deleteScheduler(selectedUserId))
+      toast.success("Scheduler deleted successfully!");
+      if (response.status === 200) {
+        handleClose();
+      }
+    } catch (error) {
+      console.log("Deletion failed!", error);
+      toast.error(error.response.data.message);
+    } 
+  };
+
+  
   const buttonStyle = {
     width: { xs: "100px", md: "200px" },
     height: { xs: "40px", md: "50px" },
@@ -56,7 +78,7 @@ const DeleteScheduler = ({ openEditScheduler, handleClose }) => {
             ) : (
               <>
                 <Button
-                  //   onClick={() => handleDeleteClick()}
+                    onClick={ handleDeleteSchedulerClick}
                   sx={{
                     ...buttonStyle,
                     ":hover": { backgroundColor: "#FDB73D" },

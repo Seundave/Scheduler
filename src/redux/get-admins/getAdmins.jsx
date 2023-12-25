@@ -44,6 +44,20 @@ const getAdminSlice = createSlice({
 
       state.allAdmins[findDocIndex] = updatedAdmin;
     },
+
+    updateCreateAdminList: (state, action) => {
+      const newAdmin = action.payload;
+      state.allAdmins = [...state.allAdmins, newAdmin];
+      state.loading = false;
+    },
+
+    deleteAdminList: (state, action) => {
+      const adminIdToDelete = action.payload;
+      state.allAdmins = state.allAdmins.filter(
+        (admin) => admin._id !== adminIdToDelete
+      );
+      state.loading = false;
+    },
   },
 });
 
@@ -55,6 +69,8 @@ export const {
   getFilteredAdminSuccess,
   getFilteredAdminFailure,
   updateAdminList,
+  updateCreateAdminList,
+  deleteAdminList,
 } = getAdminSlice.actions;
 
 export default getAdminSlice.reducer;

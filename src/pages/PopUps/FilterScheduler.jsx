@@ -101,12 +101,11 @@ const FilterScheduler = ({ openSchedulerFilter, handleClose }) => {
         "http://localhost:3000/scheduler/get-scheduler",
         data
       );
-      console.log("Admin created successfully", res.data);
+      // console.log("Admin created successfully", res.data);
       console.log(res);
       dispatch(getFilteredSchedulerSuccess(res.data));
       handleClose();
     } catch (error) {
-      console.log("Error submitting form", error);
       dispatch(getFilteredSchedulerFailure(error));
       toast.error(error.response.data.message);
     }

@@ -23,6 +23,7 @@ import {
   createAdminSuccess,
   createAdminStart,
 } from "../../redux/create-admin/createAdmin";
+import { updateCreateAdminList } from "../../redux/get-admins/getAdmins";
 
 const adminFormSchema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -65,6 +66,7 @@ const CreateAdmin = ({ openAdminPopup, handleClose }) => {
       );
       console.log("Admin created successfully", res.data);
       console.log(res);
+      dispatch(updateCreateAdminList(res.data))
       dispatch(createAdminSuccess(res.data));
       toast.success("Admin created successfully!");
       // console.log(res.data);
@@ -73,7 +75,7 @@ const CreateAdmin = ({ openAdminPopup, handleClose }) => {
       // window.location.reload();
     } catch (error) {
       console.log("Error submitting form", error);
-      toast.error("Error creating admin!");
+      toast.error(error.response.data.message);
       dispatch(createAdminFailure(error.message));
     }
   };

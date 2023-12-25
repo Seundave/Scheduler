@@ -21,6 +21,7 @@ import {
   deleteAdminFailure,
   deleteAdminSuccess,
 } from "../../redux/delete-admin/deleteAdmin";
+import { deleteAdminList } from "../../redux/get-admins/getAdmins";
 
 const DeleteAdmin = ({ openDeleteAdmin, handleClose, selectedUser }) => {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
@@ -38,6 +39,7 @@ const DeleteAdmin = ({ openDeleteAdmin, handleClose, selectedUser }) => {
       const response = await axios.delete(
         `http://localhost:3000/admin/delete-admin/${selectedUserId}`
       );
+      dispatch(deleteAdminList(selectedUserId));
       dispatch(deleteAdminSuccess());
       toast.success("Admin deleted successfully!");
       if (response.status === 200) {

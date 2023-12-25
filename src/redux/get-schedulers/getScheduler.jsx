@@ -44,6 +44,14 @@ const getSchedulerSlice = createSlice({
 
       state.allSchedulers[findDocIndex] = updatedScheduler;
     },
+
+    deleteScheduler: (state, action) => {
+      const schedulerIdToDelete = action.payload;
+      state.allSchedulers = state.allSchedulers.filter(
+        (scheduler) => scheduler._id !== schedulerIdToDelete
+      );
+      state.loading = false;
+    },
   },
 });
 
@@ -55,6 +63,7 @@ export const {
   getFilteredSchedulerSuccess,
   getFilteredSchedulerFailure,
   updateSchedulerList,
+  deleteScheduler
 } = getSchedulerSlice.actions;
 
 export default getSchedulerSlice.reducer;
