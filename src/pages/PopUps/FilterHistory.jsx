@@ -109,7 +109,7 @@ const FilterHistory = ({ openFilterPopup, handleClose }) => {
       handleClose();
     } catch (error) {
       dispatch(getFilteredSchedulerFailure(error));
-      console.log("Error fetching scheduler", error);
+      toast.error(error.response.data.message)
     }
   };
 

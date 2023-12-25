@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { filter } from "lodash";
 import { sentenceCase } from "change-case";
 import { useEffect, useState } from "react";
+import { format } from 'date-fns';
 // @mui
 import {
   Card,
@@ -283,9 +284,9 @@ export default function HistoryPage() {
 
                           <TableCell align="left">{capacity}</TableCell>
 
-                          <TableCell align="left">{createdAt}</TableCell>
+                          <TableCell align="left">{format(new Date(createdAt), 'dd/MM/yyyy')}</TableCell>
 
-                          <TableCell align="left">{updatedAt}</TableCell>
+                          <TableCell align="left">{format(new Date(updatedAt), 'dd/MM/yyyy')}</TableCell>
 
                           {/* <TableCell align="left">{updatedAt}</TableCell> */}
 
