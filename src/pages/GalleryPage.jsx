@@ -97,11 +97,11 @@ function applySortFilter(array, comparator, query) {
 const ITEM_HEIGHT = 48;
 
 export default function GalleryPage() {
-const [schedulers, setSchedulers] = useState([])
+  const [schedulers, setSchedulers] = useState([]);
 
   const [selectedSchedulers, setSelectedSchedulers] = useState(null);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const { loading, error } = useSelector((state) => state.getSchedulers);
 
@@ -149,6 +149,8 @@ const [schedulers, setSchedulers] = useState([])
     }
   };
 
+  console.log(schedulers);
+
   useEffect(() => {
     const fetchSchedulers = async () => {
       try {
@@ -192,8 +194,13 @@ const [schedulers, setSchedulers] = useState([])
     setAnchorEl(null);
   };
 
+  const selectedScheduler = (data) => {
+    setSelectedSchedulers(data);
+  };
+
   const handleOptionClick = (event, scheduler) => {
-    setSelectedSchedulers(scheduler)
+    console.log(scheduler);
+    // setSelectedSchedulers(schedulers)
     setAnchorEl(event.currentTarget);
   };
 
@@ -281,107 +288,115 @@ const [schedulers, setSchedulers] = useState([])
           />
 
           <Container sx={{ position: "relative" }}>
-            {loading ? <Stack alignItems={"center"}><CircularProgress/></Stack> : <Grid container spacing={2}>
-              {schedulers.map((data) => (
-                <Grid key={data._id} item xs={12} sm={4}>
-                  <Card
-                    onMouseEnter={() => handleMouseEnter(data._id)}
-                    onMouseLeave={handleMouseLeave}
-                    elevation={3}
-                    sx={{ position: "relative" }}
-                  >
-                    <CardMedia
-                      component="img"
-                      height="400"
-                      alt={data.title}
-                      src={data.imageUrl[0]}
-                      style={{ position: "relative" }}
-                    />
+            {loading ? (
+              <Stack alignItems={"center"}>
+                <CircularProgress />
+              </Stack>
+            ) : (
+              <Grid container spacing={2}>
+                {schedulers.map((data) => (
+                  <Grid key={data._id} item xs={12} sm={4}>
+                    <Card
+                      onMouseEnter={() => handleMouseEnter(data._id)}
+                      onMouseLeave={handleMouseLeave}
+                      elevation={3}
+                      sx={{ position: "relative" }}
+                    >
+                      <CardMedia
+                        component="img"
+                        height="400"
+                        alt={data.title}
+                        src={data.imageUrl[0]}
+                        style={{ position: "relative" }}
+                      />
 
-                    {isHovered && isHovered === data._id && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
-                          width: "100%",
-                          height: "100%",
-                          background: "rgba(0, 0, 0, 0.6)",
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Typography variant="h6" color="white" gutterBottom>
-                          {data.title}
-                        </Typography>
-                        <Typography
-                          variant="body1"
-                          color="white"
-                          sx={{ paddingX: "20px" }}
+                      {isHovered && isHovered === data._id && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            height: "100%",
+                            background: "rgba(0, 0, 0, 0.6)",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
                         >
-                          {data.description}
-                        </Typography>
-                      </div>
-                    )}
-                    <Box>
-                      <IconButton
-                        aria-label="more"
-                        id="long-button"
-                        aria-controls={open ? "long-menu" : undefined}
-                        aria-expanded={open ? "true" : undefined}
-                        aria-haspopup="true"
-                        onClick={(event) => handleOptionClick(event)}
-                        style={{
-                          position: "absolute",
-                          top: "20px",
-                          right: "7px",
-                        }}
-                      >
-                        <MoreVertIcon sx={{ color: "white" }} />
-                      </IconButton>
-                      <Menu
-                        id="basic-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleOptionClose}
-                        anchorOrigin={{ vertical: "top", horizontal: "left" }}
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "right",
-                        }}
-                        MenuListProps={{
-                          "aria-labelledby": "basic-button",
-                        }}
-                      >
-                        <MenuItem onClick={handleEditNotification}>
-                          <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
-                          Edit
-                        </MenuItem>
+                          <Typography variant="h6" color="white" gutterBottom>
+                            {data.title}
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            color="white"
+                            sx={{ paddingX: "20px" }}
+                          >
+                            {data.description}
+                          </Typography>
+                        </div>
+                      )}
+                      <Box>
+                        <IconButton
+                          aria-label="more"
+                          id="long-button"
+                          aria-controls={open ? "long-menu" : undefined}
+                          aria-expanded={open ? "true" : undefined}
+                          aria-haspopup="true"
+                          onClick={(event) => {
+                            handleOptionClick(event);
+                            selectedScheduler(data);
+                          }}
+                          style={{
+                            position: "absolute",
+                            top: "20px",
+                            right: "7px",
+                          }}
+                        >
+                          <MoreVertIcon sx={{ color: "white" }} />
+                        </IconButton>
+                        <Menu
+                          id="basic-menu"
+                          anchorEl={anchorEl}
+                          open={open}
+                          onClose={handleOptionClose}
+                          anchorOrigin={{ vertical: "top", horizontal: "left" }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "right",
+                          }}
+                          MenuListProps={{
+                            "aria-labelledby": "basic-button",
+                          }}
+                        >
+                          <MenuItem onClick={handleEditNotification}>
+                            <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
+                            Edit
+                          </MenuItem>
 
-                        <MenuItem
-                          sx={{ color: "error.main" }}
-                          onClick={handleDeleteScheduler}
-                        >
-                          <Iconify
-                            icon={"eva:trash-2-outline"}
-                            sx={{ mr: 2 }}
-                          />
-                          Delete
-                        </MenuItem>
-                      </Menu>
-                    </Box>
-                  </Card>
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      {data.lectureTheatre}
-                    </Typography>
-                  </CardContent>
-                </Grid>
-              ))}
-            </Grid> }
-            
+                          <MenuItem
+                            sx={{ color: "error.main" }}
+                            onClick={handleDeleteScheduler}
+                          >
+                            <Iconify
+                              icon={"eva:trash-2-outline"}
+                              sx={{ mr: 2 }}
+                            />
+                            Delete
+                          </MenuItem>
+                        </Menu>
+                      </Box>
+                    </Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        {data.lectureTheatre}
+                      </Typography>
+                    </CardContent>
+                  </Grid>
+                ))}
+              </Grid>
+            )}
           </Container>
 
           {openEditScheduler && (
