@@ -73,7 +73,8 @@ export default function LoginForm() {
   const onSubmit = async (data) => {
     try {
       dispatch(signInStart());
-      const res = await axios.post("http://localhost:3000/user/signin", data);
+      const res = await axios.post("http://localhost:3000/user/signin", data,
+      );
       console.log("User logged in successfully", res.data);
       console.log(res.data);
       dispatch(signInSuccess(res.data));

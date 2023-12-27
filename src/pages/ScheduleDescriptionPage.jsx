@@ -156,7 +156,7 @@ const ScheduleDescriptionPage = () => {
       dispatch(getUserListingStart());
       const res = await axios.post(
         "http://localhost:3000/schedule/request-scheduler",
-        data
+        data,{withCredentials:true}
       );
       console.log("Request sent successfully", res.data);
       console.log(res.data);

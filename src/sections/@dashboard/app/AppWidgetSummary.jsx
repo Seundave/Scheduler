@@ -64,20 +64,21 @@ const AppWidgetSummary = ({ title, number }) => {
         py: 5,
         boxShadow: 0,
         textAlign: "center",
+        bgcolor: "#808080 !important",
         // color: (theme) => theme.palette[color].darker,
         // bgcolor: (theme) => theme.palette[color].lighter,
         // ...sx,
       }}
       // {...other}
     >
-      <Typography style={{ fontWeight: 800 }} variant="body">
+      <Typography style={{ fontWeight: 800, color: "white", fontSize: "20px", }} variant="body">
         {title}
       </Typography>
 
       <Typography
         variant="subtitle2"
         sx={{ opacity: 0.72 }}
-        style={{ fontSize: "34px" }}
+        style={{ fontSize: "60px", color: "white" }}
       >
         {number}
       </Typography>
