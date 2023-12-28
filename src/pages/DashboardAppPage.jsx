@@ -56,6 +56,7 @@ const DashboardAppPage = () => {
     setValue,
     control,
     watch,
+
     formState: { errors },
   } = methods;
 
@@ -73,8 +74,11 @@ const DashboardAppPage = () => {
       );
       console.log("Scheduler created successfully", res.data);
       dispatch(schedulerSuccess(res.data));
+      
       toast.success("Scheduler created successfully!");
       reset(defaultValues);
+      // resetField("lectureTheatre", { keepError: true })
+    
       // window.location.reload();
     } catch (error) {
       console.log("Error submitting form", error);
