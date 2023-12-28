@@ -11,26 +11,34 @@ import {
   Box,
   IconButton,
 } from "@mui/material";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import axios from "axios"
 import { deleteScheduler } from "../../redux/get-schedulers/getScheduler";
 
 const DeleteScheduler = ({ openEditScheduler, handleClose, selectedSchedulers }) => {
+  const dispatch = useDispatch()
   console.log(selectedSchedulers)
+  const selectedSchedulerId = selectedSchedulers?._id
+
+  console.log(selectedSchedulerId)
   
   const handleDeleteSchedulerClick = async () => {
-    setIsDeleteLoading(true);
+    // setIsDeleteLoading(true);
     try {
       // dispatch(deleteAdminStart());
       const response = await axios.delete(
-        `http://localhost:3000/admin/delete-admin/${selectedUserId}`
+        `http://localhost:3000/scheduler/delete-scheduler/${selectedSchedulerId}`
       );
-      dispatch(deleteScheduler(selectedUserId))
+      dispatch(deleteScheduler(selectedSchedulerId))
       toast.success("Scheduler deleted successfully!");
       if (response.status === 200) {
         handleClose();
       }
     } catch (error) {
       console.log("Deletion failed!", error);
-      toast.error(error.response.data.message);
+      toast.error(error);
     } 
   };
 

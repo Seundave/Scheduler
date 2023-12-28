@@ -94,7 +94,10 @@ const FilterScheduler = ({ openSchedulerFilter, handleClose }) => {
 
   const facilities = watch("facilities", []);
 
+  
+
   const onSubmit = async (data) => {
+    console.log(data)
     try {
       dispatch(getFilteredSchedulerStart());
       const res = await axios.post(
@@ -143,8 +146,8 @@ const FilterScheduler = ({ openSchedulerFilter, handleClose }) => {
                 defaultValue="placeholder"
                 fullWidth
                 sx={{ height: "55px" }}
-                name="faculty"
-                {...register("faculty")}
+                name="location"
+                {...register("location")}
               >
                 <MenuItem disabled value="placeholder">
                   LOCATION

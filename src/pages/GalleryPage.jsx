@@ -97,11 +97,13 @@ function applySortFilter(array, comparator, query) {
 const ITEM_HEIGHT = 48;
 
 export default function GalleryPage() {
-  const [schedulers, setSchedulers] = useState([]);
+  // const [schedulers, setSchedulers] = useState([]);
 
   const [selectedSchedulers, setSelectedSchedulers] = useState(null);
 
   const dispatch = useDispatch();
+
+  const {allSchedulers} = useSelector((state)=>state.getSchedulers)
 
   const { loading, error } = useSelector((state) => state.getSchedulers);
 
@@ -149,7 +151,7 @@ export default function GalleryPage() {
     }
   };
 
-  console.log(schedulers);
+  console.log(allSchedulers);
 
   useEffect(() => {
     const fetchSchedulers = async () => {
@@ -159,9 +161,9 @@ export default function GalleryPage() {
           "http://localhost:3000/scheduler/get-schedulers"
         );
         console.log(response);
-        const fetchedSchedulers = response.data;
+        // const fetchedSchedulers = response.data;
         dispatch(getSchedulerSuccess(response.data));
-        setSchedulers(fetchedSchedulers);
+        // setSchedulers(fetchedSchedulers);
         // setLoading(false);
       } catch (error) {
         dispatch(getSchedulerFailure(error.message));
@@ -294,7 +296,7 @@ export default function GalleryPage() {
               </Stack>
             ) : (
               <Grid container spacing={2}>
-                {schedulers.map((data) => (
+                {allSchedulers.map((data) => (
                   <Grid key={data._id} item xs={12} sm={4}>
                     <Card
                       onMouseEnter={() => handleMouseEnter(data._id)}

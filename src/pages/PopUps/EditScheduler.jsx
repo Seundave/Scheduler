@@ -72,6 +72,8 @@ const EditScheduler = ({ openEditScheduler, handleClose, selectedSchedulers }) =
 
   console.log(selectedSchedulers);
 
+  console.log(selectedSchedulers?.imageUrl)
+
   // const selectedSchedulerId = selectedScheduler?._id;
   // console.log(selectedSchedulerId)
 
@@ -339,7 +341,10 @@ const EditScheduler = ({ openEditScheduler, handleClose, selectedSchedulers }) =
 
             <Grid item xs={12} sm={4}>
             <Select
-              defaultValue="placeholder"
+              // defaultValue="placeholder"
+              defaultValue={
+                selectedSchedulers.location || "placeholer"
+             }
               name="location"
               fullWidth
               sx={{ height: "40px" }}
@@ -371,7 +376,10 @@ const EditScheduler = ({ openEditScheduler, handleClose, selectedSchedulers }) =
 
             <Grid item xs={12} sm={4}>
             <Select
-              defaultValue="placeholder"
+              // defaultValue="placeholder"
+              defaultValue={
+                selectedSchedulers.capacity || "placeholer"
+             }
               name="capacity"
               fullWidth
               sx={{ height: "40px" }}
@@ -404,7 +412,7 @@ const EditScheduler = ({ openEditScheduler, handleClose, selectedSchedulers }) =
                   labelId="demo-multiple-name-label"
                   id="demo-multiple-name"
                   multiple
-                  value={facilities}
+                  value={selectedSchedulers?.facilities}
                   // value={specialty}
                   // onChange={handleChange}
                   // name="interest"
@@ -412,7 +420,7 @@ const EditScheduler = ({ openEditScheduler, handleClose, selectedSchedulers }) =
                   // {...register("interest")}
                   renderValue={(selected, index) => (
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                      {selected?.map((value, index) => (
+                      {selectedSchedulers?.facilities?.map((value, index) => (
                         <Chip
                           key={value}
                           label={index + 1 + "." + " " + value}
@@ -441,7 +449,10 @@ const EditScheduler = ({ openEditScheduler, handleClose, selectedSchedulers }) =
 
             <Grid item xs={12} sm={4}>
               <Select
-                defaultValue="placeholder"
+                // defaultValue="placeholder"
+                defaultValue={
+                  selectedSchedulers.status || "placeholer"
+               }
                 name="status"
                 fullWidth
                 sx={{ height: "59px", marginTop:"20px" }}
@@ -460,7 +471,10 @@ const EditScheduler = ({ openEditScheduler, handleClose, selectedSchedulers }) =
 
             <Grid item xs={12} sm={12}>
               <TextField
-                placeholder="Description"
+                // placeholder="Description"
+                defaultValue={
+                  selectedSchedulers.description || "placeholer"
+               }
                 name="description"
                 multiline
                 rows={6}

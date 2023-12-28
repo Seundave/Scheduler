@@ -53,49 +53,7 @@ const FilterAdmin = ({ openFilterPopup, handleClose }) => {
     formState: { errors },
   } = methods;
 
-  // useEffect(() => {
-  //   const fetchAdmins = async () => {
-  //     try {
-  //       dispatch(getFilteredAdminStart());
-  //       const response = await axios.get(
-  //         "http://localhost:3000/admin/get-admins/",
-  //         data
-  //       );
-  //       console.log(response);
-  //       dispatch(getFilteredAdminSuccess(response.data))
-  //     } catch (error) {
-  //       dispatch(getFilteredAdminFailure(error));
-  //       console.log("Error fetching admins", error);
-  //     }
-  //   };
 
-  //   fetchAdmins();
-  // },[]);
-
-  // useEffect(() => {
-  //   const urlParams = new URLSearchParams(location.search);
-  //   const departmentUrl = urlParams.get("department");
-  //   const facultyUrl = urlParams.get("faculty");
-
-  //   if (departmentUrl || facultyUrl) {
-  //     data({
-  //       department: departmentUrl || "",
-  //       faculty: facultyUrl || "",
-  //     });
-  //   }
-
-  //   const fetchFilteredAdmins = async () => {
-  //     setIsLoading(true);
-  //     const searchQuery = urlParams.toString();
-  //     const res = await axios.get(`admin/listing/get?${searchQuery}`); //To be changed
-  //     setFilteredListings(res.data);
-  //     setIsLoading(false);
-  //   };
-
-  //   fetchFilteredAdmins();
-  // }, [location.search]);
-
-  // console.log(filteredListings);
 
   const onSubmit = async (data) => {
     console.log(data)
