@@ -44,7 +44,11 @@ import {
   scheduleSuccess,
 } from "../redux/userSchedule/userScheduleSlice";
 import { current } from "@reduxjs/toolkit";
-import { getUserListingFailure, getUserListingStart, getUserListingSuccess } from "../redux/getUserListing/getUserListing";
+import {
+  getUserListingFailure,
+  getUserListingStart,
+  getUserListingSuccess,
+} from "../redux/getUserListing/getUserListing";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -122,9 +126,7 @@ const ScheduleDescriptionPage = () => {
     }
   }, [id]);
 
-  console.log(currentUser._id)
-
-
+  console.log(currentUser._id);
 
   const methods = useForm({
     defaultValues: {
@@ -152,18 +154,27 @@ const ScheduleDescriptionPage = () => {
   const date = watch("date", []);
 
   const onSubmit = async (data) => {
+    const formattedData={
+      lectureTheatre: selectedTheatre,
+      purpose: data.purpose,
+      date: data.date,
+      time: data.time,
+      userRef: currentUserId,
+    }
     try {
+      console.log(formattedData)
       dispatch(getUserListingStart());
       const res = await axios.post(
         "http://localhost:3000/schedule/request-scheduler",
-        data,{withCredentials:true}
+        formattedData,
+        { withCredentials: true }
       );
       console.log("Request sent successfully", res.data);
       console.log(res.data);
       dispatch(getUserListingSuccess(res.data));
       toast.success("Request sent successfully!");
     } catch (error) {
-      console.log(error)
+      console.log(error);
       dispatch(getUserListingFailure(error));
       toast.error(error.response.data.message);
     }

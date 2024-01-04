@@ -1,7 +1,8 @@
 import { Helmet } from "react-helmet-async";
+import axios from "axios";
 import { filter } from "lodash";
 import { sentenceCase } from "change-case";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // @mui
 import {
   Card,
@@ -21,6 +22,7 @@ import {
   IconButton,
   TableContainer,
   TablePagination,
+  CircularProgress,
 } from "@mui/material";
 // components
 import Label from "../components/label";
@@ -32,6 +34,12 @@ import { UserListHead, UserListToolbar } from "../sections/@dashboard/user";
 // mock
 import USERLIST from "../_mock/user";
 import EditUserListings from "./PopUps/EditUserListings";
+import {
+  getUserListingFailure,
+  getUserListingStart,
+  getUserListingSuccess,
+} from "../redux/getUserListing/getUserListing";
+import { toast } from "react-toastify";
 
 // ----------------------------------------------------------------------
 
@@ -83,7 +91,9 @@ export default function HistoryPage() {
 
   const dispatch = useDispatch();
 
-  const { userScheduleListing } = useSelector((state) => state.userschedules);
+  const { userScheduleListing, isLoading } = useSelector(
+    (state) => state.userschedules
+  );
 
   const [page, setPage] = useState(0);
 
@@ -93,7 +103,8 @@ export default function HistoryPage() {
 
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const [openEditSchedulerListings, setOpenEditSchedulerListings] = useState(false);
+  const [openEditSchedulerListings, setOpenEditSchedulerListings] =
+    useState(false);
 
   const [orderBy, setOrderBy] = useState("name");
 
@@ -101,13 +112,34 @@ export default function HistoryPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  console.log(userScheduleListing._id);
+  const userScheduleListingId = userScheduleListing._id;
+
   console.log(userScheduleListing);
+
+  useEffect(() => {
+    const fetchUserList = async () => {
+      try {
+        dispatch(getUserListingStart());
+        const response = await axios.get(
+          `http://localhost:3000/schedule/get-scheduler/${userScheduleListingId}`
+        );
+        console.log(response.data);
+        dispatch(getUserListingSuccess(response.data));
+      } catch (error) {
+        // dispatch(getSchedulerFailure(error.message));
+        console.log("Error fetching admins", error);
+        dispatch(getUserListingFailure(error));
+      }
+    };
+
+    fetchUserList();
+  }, []);
 
   const handleOpenMenu = (event, user) => {
     setSelectedUser(user);
     setOpen(event.currentTarget);
   };
-
 
   const handleCloseMenu = () => {
     setOpen(null);
@@ -121,7 +153,7 @@ export default function HistoryPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds =  userScheduleListing.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -165,9 +197,7 @@ export default function HistoryPage() {
   };
 
   const emptyRows =
-    page > 0
-      ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length)
-      : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage -  userScheduleListing.length) : 0;
 
   const filteredUsers = applySortFilter(
     USERLIST,
@@ -204,127 +234,141 @@ export default function HistoryPage() {
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
-                <UserListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
-                />
-                <TableBody>
-                  {filteredUsers
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const {
-                        _id,
-                        lectureTheatre,
-                        time,
-                        purpose,
-                        status,
-                        date,
-                      } = row;
-                      const selectedUser = selected.indexOf(name) !== -1;
-
-                      return (
-                        <TableRow
-                          hover
-                          key={_id}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={selectedUser}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={selectedUser}
-                              onChange={(event) => handleClick(event, name)}
-                            />
-                          </TableCell>
-
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack
-                              direction="row"
-                              alignItems="center"
-                              spacing={2}
-                            >
-                              {/* <Avatar alt={name} src={avatarUrl} /> */}
-                              <Typography variant="subtitle2" noWrap>
-                                {lectureTheatre}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-
-                          <TableCell align="left">{date}</TableCell>
-
-                          <TableCell align="left">{time}</TableCell>
-
-                          <TableCell align="left">{purpose}</TableCell>
-
-                          {/* <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell> */}
-
-                          <TableCell align="left">
-                            <Label
-                              color={
-                                (status === "banned" && "error") || "success"
-                              }
-                            >
-                              {sentenceCase(status)}
-                            </Label>
-                          </TableCell>
-
-                          <TableCell align="right">
-                            <IconButton
-                              size="large"
-                              color="inherit"
-                              onClick={handleOpenMenu}
-                            >
-                              <Iconify icon={"eva:more-vertical-fill"} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-
-                {isNotFound && (
+              {isLoading ? (
+                <Stack alignItems={"center"}>
+                  {" "}
+                  <CircularProgress />{" "}
+                </Stack>
+              ) : (
+                <Table>
+                  <UserListHead
+                    order={order}
+                    orderBy={orderBy}
+                    headLabel={TABLE_HEAD}
+                    rowCount={ userScheduleListing.length}
+                    numSelected={selected.length}
+                    onRequestSort={handleRequestSort}
+                    onSelectAllClick={handleSelectAllClick}
+                  />
                   <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <Paper
-                          sx={{
-                            textAlign: "center",
-                          }}
-                        >
-                          <Typography variant="h6" paragraph>
-                            Not found
-                          </Typography>
+                    {filteredUsers
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((row) => {
+                        const {
+                          _id,
+                          lectureTheatre,
+                          time,
+                          purpose,
+                          status,
+                          date,
+                        } = row;
+                        const selectedUser = selected.indexOf(name) !== -1;
 
-                          <Typography variant="body2">
-                            No results found for &nbsp;
-                            <strong>&quot;{filterName}&quot;</strong>.
-                            <br /> Try checking for typos or using complete
-                            words.
-                          </Typography>
-                        </Paper>
-                      </TableCell>
-                    </TableRow>
+                        return (
+                          <TableRow
+                            hover
+                            key={_id}
+                            tabIndex={-1}
+                            role="checkbox"
+                            selected={selectedUser}
+                          >
+                            <TableCell padding="checkbox">
+                              <Checkbox
+                                checked={selectedUser}
+                                onChange={(event) => handleClick(event, name)}
+                              />
+                            </TableCell>
+
+                            <TableCell
+                              component="th"
+                              scope="row"
+                              padding="none"
+                            >
+                              <Stack
+                                direction="row"
+                                alignItems="center"
+                                spacing={2}
+                              >
+                                {/* <Avatar alt={name} src={avatarUrl} /> */}
+                                <Typography variant="subtitle2" noWrap>
+                                  {lectureTheatre}
+                                </Typography>
+                              </Stack>
+                            </TableCell>
+
+                            <TableCell align="left">{date}</TableCell>
+
+                            <TableCell align="left">{time}</TableCell>
+
+                            <TableCell align="left">{purpose}</TableCell>
+
+                            {/* <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell> */}
+
+                            <TableCell align="left">
+                              <Label
+                                color={
+                                  (status === "banned" && "error") || "success"
+                                }
+                              >
+                                {sentenceCase(status)}
+                              </Label>
+                            </TableCell>
+
+                            <TableCell align="right">
+                              <IconButton
+                                size="large"
+                                color="inherit"
+                                onClick={handleOpenMenu}
+                              >
+                                <Iconify icon={"eva:more-vertical-fill"} />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
                   </TableBody>
-                )}
-              </Table>
+
+                  {isNotFound && (
+                    <TableBody>
+                      <TableRow>
+                        <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                          <Paper
+                            sx={{
+                              textAlign: "center",
+                            }}
+                          >
+                            <Typography variant="h6" paragraph>
+                              Not found
+                            </Typography>
+
+                            <Typography variant="body2">
+                              No results found for &nbsp;
+                              <strong>&quot;{filterName}&quot;</strong>.
+                              <br /> Try checking for typos or using complete
+                              words.
+                            </Typography>
+                          </Paper>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  )}
+                </Table>
+              )}
             </TableContainer>
           </Scrollbar>
 
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={USERLIST.length}
+            count={ userScheduleListing.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
