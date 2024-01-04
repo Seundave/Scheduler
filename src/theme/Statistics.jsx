@@ -11,7 +11,7 @@ function Statistics() {
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
-          <AppWidgetSummary title="Active Bookings" number={5} />
+          <AppWidgetSummary title="Approved Bookings" number={5} />
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>

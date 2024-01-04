@@ -3,6 +3,7 @@ import axios from "axios";
 import { filter } from "lodash";
 import { sentenceCase } from "change-case";
 import { useState, useEffect } from "react";
+import { format } from "date-fns";
 // @mui
 import {
   Card,
@@ -95,6 +96,8 @@ export default function HistoryPage() {
     (state) => state.userschedules
   );
 
+  const { currentUser } = useSelector((state) => state.user);
+
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState("asc");
@@ -112,8 +115,22 @@ export default function HistoryPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  function getStatus(status) {
+    if (status === "pending") {
+      return "warning";
+    } else if (status === "decline") {
+      return "error";
+    } else {
+      return "success";
+    }
+  }
+
   console.log(userScheduleListing._id);
-  const userScheduleListingId = userScheduleListing._id;
+  const userScheduleListingId = currentUser._id;
+
+  console.log(currentUser._id);
+
+  console.log(userScheduleListingId);
 
   console.log(userScheduleListing);
 
@@ -153,7 +170,7 @@ export default function HistoryPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds =  userScheduleListing.map((n) => n.name);
+      const newSelecteds = userScheduleListing.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -197,10 +214,12 @@ export default function HistoryPage() {
   };
 
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage -  userScheduleListing.length) : 0;
+    page > 0
+      ? Math.max(0, (1 + page) * rowsPerPage - userScheduleListing.length)
+      : 0;
 
   const filteredUsers = applySortFilter(
-    USERLIST,
+    userScheduleListing,
     getComparator(order, orderBy),
     filterName
   );
@@ -245,7 +264,7 @@ export default function HistoryPage() {
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
-                    rowCount={ userScheduleListing.length}
+                    rowCount={userScheduleListing.length}
                     numSelected={selected.length}
                     onRequestSort={handleRequestSort}
                     onSelectAllClick={handleSelectAllClick}
@@ -299,7 +318,9 @@ export default function HistoryPage() {
                               </Stack>
                             </TableCell>
 
-                            <TableCell align="left">{date}</TableCell>
+                            <TableCell align="left">
+                              {format(new Date(date), "dd/MM/yyyy")}
+                            </TableCell>
 
                             <TableCell align="left">{time}</TableCell>
 
@@ -308,11 +329,7 @@ export default function HistoryPage() {
                             {/* <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell> */}
 
                             <TableCell align="left">
-                              <Label
-                                color={
-                                  (status === "banned" && "error") || "success"
-                                }
-                              >
+                              <Label color={getStatus(status)}>
                                 {sentenceCase(status)}
                               </Label>
                             </TableCell>
@@ -368,7 +385,7 @@ export default function HistoryPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={ userScheduleListing.length}
+            count={userScheduleListing.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
