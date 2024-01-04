@@ -43,7 +43,7 @@ import EditScheduler from "./PopUps/EditScheduler";
 import DeleteScheduler from "./PopUps/DeleteScheduler";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"
+import axios from "axios";
 import {
   getSchedulerFailure,
   getSchedulerStart,
