@@ -143,9 +143,9 @@ export default function UserPage() {
     fetchAdmins();
   }, []);
 
-  const {allAdmins} = useSelector((state)=>state.getAdmin)
+  const { allAdmins } = useSelector((state) => state.getAdmin);
 
-  console.log(allAdmins)
+  console.log(allAdmins);
 
   // console.log(users);
 
@@ -275,115 +275,129 @@ export default function UserPage() {
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
-            {loading ? <Stack alignItems={"center"}> <CircularProgress  /> </Stack> :  <Table>
-                <UserListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={allAdmins.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
-                />
-                <TableBody>
-                  {filteredUsers
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const {
-                        _id,
-                        name,
-                        department,
-                        resource,
-                        faculty,
-                        avatarUrl,
-                        email,
-                      } = row;
-                      const selectedUser = selected.indexOf(name) !== -1;
+              {loading ? (
+                <Stack alignItems={"center"}>
+                  {" "}
+                  <CircularProgress />{" "}
+                </Stack>
+              ) : (
+                <Table>
+                  <UserListHead
+                    order={order}
+                    orderBy={orderBy}
+                    headLabel={TABLE_HEAD}
+                    rowCount={allAdmins.length}
+                    numSelected={selected.length}
+                    onRequestSort={handleRequestSort}
+                    onSelectAllClick={handleSelectAllClick}
+                  />
+                  <TableBody>
+                    {filteredUsers
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((row) => {
+                        const {
+                          _id,
+                          name,
+                          department,
+                          resource,
+                          faculty,
+                          avatarUrl,
+                          email,
+                        } = row;
+                        const selectedUser = selected.indexOf(name) !== -1;
 
-                      return (
-                        <TableRow
-                          hover
-                          key={_id}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={selectedUser}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={selectedUser}
-                              onChange={(event) => handleClick(event, name)}
-                            />
-                          </TableCell>
+                        return (
+                          <TableRow
+                            hover
+                            key={_id}
+                            tabIndex={-1}
+                            role="checkbox"
+                            selected={selectedUser}
+                          >
+                            <TableCell padding="checkbox">
+                              <Checkbox
+                                checked={selectedUser}
+                                onChange={(event) => handleClick(event, name)}
+                              />
+                            </TableCell>
 
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack
-                              direction="row"
-                              alignItems="center"
-                              spacing={2}
+                            <TableCell
+                              component="th"
+                              scope="row"
+                              padding="none"
                             >
-                              {/* <Avatar alt={name} src={avatarUrl} /> */}
-                              <Typography variant="subtitle2" noWrap>
-                                {name}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
+                              <Stack
+                                direction="row"
+                                alignItems="center"
+                                spacing={2}
+                              >
+                                {/* <Avatar alt={name} src={avatarUrl} /> */}
+                                <Typography variant="subtitle2" noWrap>
+                                  {name}
+                                </Typography>
+                              </Stack>
+                            </TableCell>
 
-                          <TableCell align="left">{faculty}</TableCell>
+                            <TableCell align="left">{faculty}</TableCell>
 
-                          <TableCell align="left">{department}</TableCell>
+                            <TableCell align="left">{department}</TableCell>
 
-                          <TableCell align="left">{email}</TableCell>
+                            <TableCell align="left">{email}</TableCell>
 
-                          {/* <TableCell align="left">
+                            {/* <TableCell align="left">
                             {email ? "Yes" : "No"}
                           </TableCell> */}
 
-                          <TableCell align="left">{resource}</TableCell>
+                            <TableCell align="left">{resource}</TableCell>
 
-                          <TableCell align="right">
-                            <IconButton
-                              size="large"
-                              color="inherit"
-                              onClick={(event) => handleOpenMenu(event, row)}
-                            >
-                              <Iconify icon={"eva:more-vertical-fill"} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-
-                {isNotFound && (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <Paper
-                          sx={{
-                            textAlign: "center",
-                          }}
-                        >
-                          <Typography variant="h6" paragraph>
-                            Not found
-                          </Typography>
-
-                          <Typography variant="body2">
-                            No results found for &nbsp;
-                            <strong>&quot;{filterName}&quot;</strong>.
-                            <br /> Try checking for typos or using complete
-                            words.
-                          </Typography>
-                        </Paper>
-                      </TableCell>
-                    </TableRow>
+                            <TableCell align="right">
+                              <IconButton
+                                size="large"
+                                color="inherit"
+                                onClick={(event) => handleOpenMenu(event, row)}
+                              >
+                                <Iconify icon={"eva:more-vertical-fill"} />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
                   </TableBody>
-                )}
-              </Table>}
+
+                  {isNotFound && (
+                    <TableBody>
+                      <TableRow>
+                        <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                          <Paper
+                            sx={{
+                              textAlign: "center",
+                            }}
+                          >
+                            <Typography variant="h6" paragraph>
+                              Not found
+                            </Typography>
+
+                            <Typography variant="body2">
+                              No results found for &nbsp;
+                              <strong>&quot;{filterName}&quot;</strong>.
+                              <br /> Try checking for typos or using complete
+                              words.
+                            </Typography>
+                          </Paper>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  )}
+                </Table>
+              )}
             </TableContainer>
           </Scrollbar>
 

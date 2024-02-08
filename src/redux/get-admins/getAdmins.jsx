@@ -54,7 +54,7 @@ const getAdminSlice = createSlice({
     deleteAdminList: (state, action) => {
       const adminIdToDelete = action.payload;
       state.allAdmins = state.allAdmins.filter(
-        (admin) => admin._id !== adminIdToDelete
+        (admin) => admin.stockId !== adminIdToDelete
       );
       state.loading = false;
     },
