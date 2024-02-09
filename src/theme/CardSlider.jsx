@@ -2,7 +2,7 @@ import { React, useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Box, Button } from "@mui/material";
+import { Box, Button, CircularProgress, Stack } from "@mui/material";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card, CardMedia, Typography } from "@material-ui/core";
 import image1 from "../assets/pexels-david-yu-1624990-min.jpg";
@@ -110,46 +110,53 @@ const CardSlider = () => {
     setHoveredId(null);
   };
   return (
-    <div>
-      <Slider {...settings}>
-        {schedulers.map((item) => (
-          <div
-            key={item._id}
-            // style={{ height: "200px" }}
-          >
-            <Card
-              className={classes.root}
-              onMouseEnter={() => handleMouseEnter(item._id)}
-              onMouseLeave={handleMouseLeave}
-            >
-              <CardMedia
-                className={classes.media}
-                component="img"
-                image={item.imageUrl[0]}
-                alt={item.lectureTheatre}
-              />
-              {hoveredId && (
-                <div
-                  className={`${classes.overlay} ${
-                    hoveredId === item._id ? classes.overlayVisible : ""
-                  }`}
+    <>
+      {loading ? (
+        <Stack alignItems={"center"}>
+          {" "}
+          <CircularProgress />{" "}
+        </Stack>
+      ) : (
+        <div>
+          <Slider {...settings}>
+            {schedulers.map((item) => (
+              <div
+                key={item._id}
+                // style={{ height: "200px" }}
+              >
+                <Card
+                  className={classes.root}
+                  onMouseEnter={() => handleMouseEnter(item._id)}
+                  onMouseLeave={handleMouseLeave}
                 >
-                  {hoveredId === item._id && (
-                    <Box
-                      sx={{
-                        width: { sm: "600px", xs: "300px" },
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                      }}
+                  <CardMedia
+                    className={classes.media}
+                    component="img"
+                    image={item.imageUrl[0]}
+                    alt={item.lectureTheatre}
+                  />
+                  {hoveredId && (
+                    <div
+                      className={`${classes.overlay} ${
+                        hoveredId === item._id ? classes.overlayVisible : ""
+                      }`}
                     >
-                      <Typography variant="h4">
-                        {item.lectureTheatre}
-                      </Typography>
-                      <Typography variant="body1">
-                        {item.description}
-                      </Typography>
-                      {/* <Button
+                      {hoveredId === item._id && (
+                        <Box
+                          sx={{
+                            width: { sm: "600px", xs: "300px" },
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Typography variant="h4">
+                            {item.lectureTheatre}
+                          </Typography>
+                          <Typography variant="body1">
+                            {item.description}
+                          </Typography>
+                          {/* <Button
                         sx={{
                           bgcolor: "white",
                           width: "150px",
@@ -158,15 +165,17 @@ const CardSlider = () => {
                       >
                         View more
                       </Button> */}
-                    </Box>
+                        </Box>
+                      )}
+                    </div>
                   )}
-                </div>
-              )}
-            </Card>
-          </div>
-        ))}
-      </Slider>
-    </div>
+                </Card>
+              </div>
+            ))}
+          </Slider>
+        </div>
+      )}
+    </>
   );
 };
 
